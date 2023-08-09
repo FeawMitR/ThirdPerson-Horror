@@ -1,0 +1,18 @@
+{
+    "name": "InputCharacter",
+    "rootNamespace": "TPSHorror.InputCharacter",
+    "references": [
+        "GUID:9fde674d7da91064f84417913234e723",
+        "GUID:dd73d9f039ee2c541a404358e89fd641",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
