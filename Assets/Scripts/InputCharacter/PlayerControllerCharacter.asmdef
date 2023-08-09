@@ -1,6 +1,6 @@
 {
     "name": "InputCharacter",
-    "rootNamespace": "TPSHorror.InputCharacter",
+    "rootNamespace": "TPSHorror.PlayerControllerCharacter",
     "references": [
         "GUID:9fde674d7da91064f84417913234e723",
         "GUID:dd73d9f039ee2c541a404358e89fd641",
