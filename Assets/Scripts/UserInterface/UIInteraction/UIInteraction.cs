@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace TPSHorror.UserInterface
 {
@@ -10,6 +11,9 @@ namespace TPSHorror.UserInterface
     {
        
         private RectTransform m_RectTransform = null;
+        [SerializeField]
+        private Text m_InteractText = null;
+        private string key;
 
         protected override void Initialize()
         {
@@ -19,10 +23,17 @@ namespace TPSHorror.UserInterface
             m_RectTransform = this.GetComponent<RectTransform>();
         }
 
-        public void Show(Vector2 rectTranformPosition)
+        public void Show(Vector2 rectTranformPosition,string keyName)
         {
             Show();
             m_RectTransform.anchoredPosition = rectTranformPosition;
+   
+            m_InteractText.text = string.Format("Press : {0}", keyName);
+            if (key != keyName)
+            {
+                key = keyName;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(m_RectTransform);
+            }
         }
     }
 }

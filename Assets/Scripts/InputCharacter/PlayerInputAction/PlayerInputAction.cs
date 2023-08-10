@@ -209,7 +209,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3332877c-2884-43cb-a221-eb9a65f3f2b4"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
@@ -242,7 +242,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f3d6a37e-143f-408b-bb50-7f9d082ff54c"",
-                    ""path"": ""<XInputController>/leftTrigger"",
+                    ""path"": ""<XInputController>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Xbox"",

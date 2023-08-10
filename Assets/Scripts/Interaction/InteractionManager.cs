@@ -61,10 +61,10 @@ namespace TPSHorror.Interaction
             Destroy(this.gameObject);
         }
 
-        public void ShowUIInteract(IInteractAble interactAble)
+        public void ShowUIInteract(IInteractAble interactAble,string nameKey)
         {
             m_CurrentInteractAble = interactAble;
-            m_UiInteraction.Show(CanvasExtention.WorldPositionToCanvasPosition(CanvasInstance.Instance.CanvasRectTransform,Camera.main, interactAble.Pos));
+            m_UiInteraction.Show(CanvasExtention.WorldPositionToCanvasPosition(CanvasInstance.Instance.CanvasRectTransform,Camera.main, interactAble.Pos), nameKey);
         }
 
         public void CloseUIInteract()
@@ -84,11 +84,13 @@ namespace TPSHorror.Interaction
             {
                 return;
             }
+
+            Debug.Log($"StartInteraction");
         }
 
         public void FinishedInteraction()
         {
-
+            Debug.Log($"FinishedInteraction");
         }
     }
 }

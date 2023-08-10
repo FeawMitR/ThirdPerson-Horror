@@ -172,6 +172,7 @@ namespace TPSHorror.PlayerControllerCharacter
             m_InputAction.PlayerMap.Look.canceled += OnLookInput;
 
             m_InputAction.PlayerMap.Run.performed += OnRunInput;
+            m_InputAction.PlayerMap.Run.started += OnRunInput;
             m_InputAction.PlayerMap.Run.canceled += OnRunInput;
 
             m_InputAction.PlayerMap.Crouched.started += OnCrouchedInput;
@@ -193,6 +194,7 @@ namespace TPSHorror.PlayerControllerCharacter
             m_InputAction.PlayerMap.Look.canceled -= OnLookInput;
 
             m_InputAction.PlayerMap.Run.performed -= OnRunInput;
+            m_InputAction.PlayerMap.Run.started -= OnRunInput;
             m_InputAction.PlayerMap.Run.canceled -= OnRunInput;
 
             m_InputAction.PlayerMap.Crouched.started -= OnCrouchedInput;
@@ -207,6 +209,13 @@ namespace TPSHorror.PlayerControllerCharacter
         private void OnMovementInput(InputAction.CallbackContext context)
         {
             m_InputDirection = context.ReadValue<Vector2>();
+            if(context.phase == InputActionPhase.Canceled || context.phase == InputActionPhase.Disabled)
+            {
+                if (m_IsRunning)
+                {
+                    m_IsRunning = false;
+                }
+            }
         }
 
         private void OnLookInput(InputAction.CallbackContext context)
@@ -216,18 +225,37 @@ namespace TPSHorror.PlayerControllerCharacter
 
         private void OnRunInput(InputAction.CallbackContext context)
         {
-            switch (context.phase)
+
+            if (IsCurrentMouseAndKeyBoard)
             {
-                case InputActionPhase.Performed:
-                    m_IsRunning = true;
+                switch (context.phase)
+                {
+                    case InputActionPhase.Performed:
 
-                    onCrouchedHandler?.Invoke(false);
-                    break;
+                        m_IsRunning = true;
 
-                case InputActionPhase.Canceled:
-                    m_IsRunning = false;
-                    break;
+                        onCrouchedHandler?.Invoke(false);
+                        break;
+
+                    case InputActionPhase.Canceled:
+                        m_IsRunning = false;
+                        break;
+                }
             }
+            else
+            {
+                if (context.phase != InputActionPhase.Started)
+                {
+                    return;
+                }
+
+                m_IsRunning = !m_IsRunning;
+                if (m_IsRunning)
+                {
+                    onCrouchedHandler?.Invoke(false);
+                }
+            }
+           
         }
 
         private void OnCrouchedInput(InputAction.CallbackContext context)
@@ -253,6 +281,7 @@ namespace TPSHorror.PlayerControllerCharacter
                 return;
             }
 
+          
             InteractionManager.Instance.StartInteraction();
         }
 
@@ -263,6 +292,8 @@ namespace TPSHorror.PlayerControllerCharacter
                 return m_playerInput.currentControlScheme == SchemeKeyboardMouse;
             }
         }
+
+        
 
         #endregion Input
 
@@ -390,7 +421,9 @@ namespace TPSHorror.PlayerControllerCharacter
                         IInteractAble hitInteractAble = hit.collider.GetComponent<IInteractAble>();
                         if(hitInteractAble != null && interactAble == hitInteractAble)
                         {
-                            InteractionManager.Instance.ShowUIInteract(hitInteractAble);
+                            var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
+                            //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
+                            InteractionManager.Instance.ShowUIInteract(hitInteractAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
                         }
                         else
                         {
