@@ -1,21 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TPSHorror.Interaction;
 
 namespace TPSHorror
 {
-    public class TestingInteraction : MonoBehaviour
+    public class TestingInteraction : MonoBehaviour, IInteractAble
     {
-        // Start is called before the first frame update
-        void Start()
+        [SerializeField]
+        private Vector3 m_UIOffset;
+
+        public Vector3 UiOffset 
         {
-        
+            get 
+            {
+                return m_UIOffset;
+            } 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        public Vector3 Pos => UiOffset + this.transform.position;
     }
 }

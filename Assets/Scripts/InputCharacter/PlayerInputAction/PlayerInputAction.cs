@@ -62,6 +62,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interaction"",
+                    ""type"": ""Button"",
+                    ""id"": ""c535defb-6b68-41af-a6d4-56ecc52cf874"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -200,7 +209,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3332877c-2884-43cb-a221-eb9a65f3f2b4"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
@@ -222,7 +231,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dc79de4a-c546-41cd-a239-80f22a32ff24"",
-                    ""path"": ""<DualShockGamepad>/buttonSouth"",
+                    ""path"": ""<DualShockGamepad>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PlayStation"",
@@ -233,7 +242,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f3d6a37e-143f-408b-bb50-7f9d082ff54c"",
-                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""path"": ""<XInputController>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Xbox"",
@@ -282,6 +291,50 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Xbox"",
                     ""action"": ""Crouched"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b863497-d13d-43cd-a31f-e4ba5f0f2a14"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""GamePad"",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7b7400a1-c5ba-4b41-99bf-20a42000b2b4"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ff50be8-1aa7-4786-b32f-1707a1b32095"",
+                    ""path"": ""<DualShockGamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PlayStation"",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f085197-3500-4c50-a471-1df76dac321a"",
+                    ""path"": ""<XInputController>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Xbox"",
+                    ""action"": ""Interaction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -346,6 +399,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_PlayerMap_Look = m_PlayerMap.FindAction("Look", throwIfNotFound: true);
         m_PlayerMap_Run = m_PlayerMap.FindAction("Run", throwIfNotFound: true);
         m_PlayerMap_Crouched = m_PlayerMap.FindAction("Crouched", throwIfNotFound: true);
+        m_PlayerMap_Interaction = m_PlayerMap.FindAction("Interaction", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -409,6 +463,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMap_Look;
     private readonly InputAction m_PlayerMap_Run;
     private readonly InputAction m_PlayerMap_Crouched;
+    private readonly InputAction m_PlayerMap_Interaction;
     public struct PlayerMapActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -417,6 +472,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_PlayerMap_Look;
         public InputAction @Run => m_Wrapper.m_PlayerMap_Run;
         public InputAction @Crouched => m_Wrapper.m_PlayerMap_Crouched;
+        public InputAction @Interaction => m_Wrapper.m_PlayerMap_Interaction;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -438,6 +494,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Crouched.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouched;
                 @Crouched.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouched;
                 @Crouched.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouched;
+                @Interaction.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteraction;
+                @Interaction.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteraction;
+                @Interaction.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnInteraction;
             }
             m_Wrapper.m_PlayerMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -454,6 +513,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Crouched.started += instance.OnCrouched;
                 @Crouched.performed += instance.OnCrouched;
                 @Crouched.canceled += instance.OnCrouched;
+                @Interaction.started += instance.OnInteraction;
+                @Interaction.performed += instance.OnInteraction;
+                @Interaction.canceled += instance.OnInteraction;
             }
         }
     }
@@ -500,5 +562,6 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnCrouched(InputAction.CallbackContext context);
+        void OnInteraction(InputAction.CallbackContext context);
     }
 }

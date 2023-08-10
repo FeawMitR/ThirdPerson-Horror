@@ -1,0 +1,94 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TPSHorror.UserInterface;
+
+namespace TPSHorror.Interaction
+{
+    public class InteractionManager : MonoBehaviour
+    {
+        private static InteractionManager m_Instance = null;
+        public static InteractionManager Instance
+        {
+            get
+            {
+                return m_Instance;
+            }
+        }
+
+        [SerializeField]
+        private UIInteraction m_UiInteractionPrefab = null;
+        private UIInteraction m_UiInteraction = null;
+
+        private IInteractAble m_CurrentInteractAble = null;
+
+        public IInteractAble CurrentInteractAble
+        {
+            get
+            {
+                return m_CurrentInteractAble;
+            }
+        }
+
+        private void OnEnable()
+        {
+            if (m_Instance == null)
+            {
+                m_Instance = this;
+                DontDestroyOnLoad(this.gameObject);
+
+                Initialized();
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            UnInitialized();
+        }
+
+        private void Initialized()
+        {
+            m_UiInteraction = Instantiate(m_UiInteractionPrefab,CanvasInstance.Instance.Canvas.transform);
+            m_UiInteraction.Hide();
+        }
+
+        private void UnInitialized()
+        {
+            Destroy(this.gameObject);
+        }
+
+        public void ShowUIInteract(IInteractAble interactAble)
+        {
+            m_CurrentInteractAble = interactAble;
+            m_UiInteraction.Show(CanvasExtention.WorldPositionToCanvasPosition(CanvasInstance.Instance.CanvasRectTransform,Camera.main, interactAble.Pos));
+        }
+
+        public void CloseUIInteract()
+        {
+            if(m_CurrentInteractAble == null)
+            {
+                return;
+            }
+
+            m_CurrentInteractAble = null;
+            m_UiInteraction.Hide();
+        }
+
+        public void StartInteraction()
+        {
+            if (m_CurrentInteractAble == null)
+            {
+                return;
+            }
+        }
+
+        public void FinishedInteraction()
+        {
+
+        }
+    }
+}

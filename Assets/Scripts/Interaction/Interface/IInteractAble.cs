@@ -4,18 +4,10 @@ using UnityEngine;
 
 namespace TPSHorror.Interaction
 {
-    public class IInteractAble : MonoBehaviour
+    public interface IInteractAble 
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        Vector3 UiOffset { get;}
         
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        Vector3 Pos{get;}
     }
 }

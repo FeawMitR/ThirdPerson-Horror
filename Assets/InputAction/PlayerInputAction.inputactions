@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Interaction",
+                    "type": "Button",
+                    "id": "c535defb-6b68-41af-a6d4-56ecc52cf874",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -178,7 +187,7 @@
                 {
                     "name": "",
                     "id": "3332877c-2884-43cb-a221-eb9a65f3f2b4",
-                    "path": "<Gamepad>/buttonSouth",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "Press",
                     "processors": "",
                     "groups": "GamePad",
@@ -200,7 +209,7 @@
                 {
                     "name": "",
                     "id": "dc79de4a-c546-41cd-a239-80f22a32ff24",
-                    "path": "<DualShockGamepad>/buttonSouth",
+                    "path": "<DualShockGamepad>/leftStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": "PlayStation",
@@ -211,7 +220,7 @@
                 {
                     "name": "",
                     "id": "f3d6a37e-143f-408b-bb50-7f9d082ff54c",
-                    "path": "<XInputController>/buttonSouth",
+                    "path": "<XInputController>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Xbox",
@@ -260,6 +269,50 @@
                     "processors": "",
                     "groups": "Xbox",
                     "action": "Crouched",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b863497-d13d-43cd-a31f-e4ba5f0f2a14",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "Interaction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b7400a1-c5ba-4b41-99bf-20a42000b2b4",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Interaction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1ff50be8-1aa7-4786-b32f-1707a1b32095",
+                    "path": "<DualShockGamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PlayStation",
+                    "action": "Interaction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f085197-3500-4c50-a471-1df76dac321a",
+                    "path": "<XInputController>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Xbox",
+                    "action": "Interaction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
