@@ -62,5 +62,17 @@ namespace TPSHorror.Character
 
             m_characterController.Move(m_GravityDirection * Time.deltaTime);
         }
+
+        public float MoveSpeed
+        {
+            get
+            {
+                return m_MoveSpeed;
+            }
+            set
+            {
+                m_MoveSpeed = value;
+            }
+        }
     }
 }
