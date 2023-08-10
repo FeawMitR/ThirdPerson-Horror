@@ -527,7 +527,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 1.1, z: 0}
 --- !u!4 &422766203
 Transform:
   m_ObjectHideFlags: 0
@@ -557,6 +557,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa0213ca1d08f144ebc9e6128be88c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_WalkSpeed: 2.5
+  m_RunSpeed: 5
+  m_IsRunning: 0
+  m_runLengthInput: 0
 --- !u!114 &422766205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,7 +584,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 3a4fd37db95e1c34b9f24e235ce52298, type: 3}
   m_Controller: {fileID: 9100000, guid: e9c82ae80082265428d2bf5d4b3ad2cf, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
