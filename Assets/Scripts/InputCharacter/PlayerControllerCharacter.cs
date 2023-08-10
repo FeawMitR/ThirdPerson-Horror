@@ -4,6 +4,7 @@ using UnityEngine;
 using TPSHorror.Character;
 using UnityEngine.InputSystem;
 using TPSHorro.AnimaionCharacter;
+using Cinemachine;
 
 namespace TPSHorror.PlayerControllerCharacter
 {
@@ -39,6 +40,7 @@ namespace TPSHorror.PlayerControllerCharacter
         [SerializeField]
         private float m_CrouchedSpeed = 1.5f;
         private bool m_IsCrouched = false;
+        private System.Action<bool> onCrouchedHandler;
 
         private float m_TargetSpeed = 0.0f;
 
@@ -54,7 +56,12 @@ namespace TPSHorror.PlayerControllerCharacter
 
         [Header("Camera")]
         [SerializeField]
-        private GameObject m_CinemachineCameraTarget = null;
+        private CinemachineVirtualCamera m_ThirdPerson = null;
+        [SerializeField]
+        private GameObject m_CameraTargetStand = null;
+        [SerializeField]
+        private GameObject m_CameraTargetCrouched = null;
+
         private float m_CameraAngleOverride = 0.0f;
 
         private float m_cinemachineTargetYaw;
@@ -94,6 +101,7 @@ namespace TPSHorror.PlayerControllerCharacter
             InitializeInputAction();
 
             m_AnimaionCharacter = this.GetComponent<AnimaionCharacter>();
+            onCrouchedHandler?.Invoke(false);
         }
 
         private void UnInitialized()
@@ -118,6 +126,7 @@ namespace TPSHorror.PlayerControllerCharacter
             m_InputAction.PlayerMap.Run.canceled += OnRunInput;
 
             m_InputAction.PlayerMap.Crouched.started += OnCrouchedInput;
+            onCrouchedHandler += OnCrouched;
 
             //TODO : Remove
             StartOperation();
@@ -135,6 +144,7 @@ namespace TPSHorror.PlayerControllerCharacter
             m_InputAction.PlayerMap.Run.canceled -= OnRunInput;
 
             m_InputAction.PlayerMap.Crouched.started -= OnCrouchedInput;
+            onCrouchedHandler -= OnCrouched;
 
             StopOperation();
         }
@@ -170,18 +180,14 @@ namespace TPSHorror.PlayerControllerCharacter
             {
                 case InputActionPhase.Performed:
                     m_IsRunning = true;
-                    if (m_IsCrouched)
-                    {
-                        m_IsCrouched = false;
-                        m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
-                    }
+
+                    onCrouchedHandler?.Invoke(false);
                     break;
 
                 case InputActionPhase.Canceled:
                     m_IsRunning = false;
                     break;
             }
-            //m_MovementInput = context.ReadValue<Vector2>();
         }
 
         private void OnCrouchedInput(InputAction.CallbackContext context)
@@ -197,8 +203,9 @@ namespace TPSHorror.PlayerControllerCharacter
                 isCrouched = false;
             }
 
-            m_IsCrouched = isCrouched;
-            m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
+            onCrouchedHandler?.Invoke(isCrouched);
+            //m_IsCrouched = isCrouched;
+            //m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
         }
 
         private bool IsCurrentMouseAndKeyBoard
@@ -258,13 +265,24 @@ namespace TPSHorror.PlayerControllerCharacter
             }
         }
 
+        private void OnCrouched(bool isCrouhced)
+        {
+            m_IsCrouched = isCrouhced;
+            m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
+            
+            if (!m_IsCrouched)
+            {
+                m_ThirdPerson.m_Follow = m_CameraTargetStand.transform;
+            }
+            else
+            {
+                m_ThirdPerson.m_Follow = m_CameraTargetCrouched.transform;
+            }
+        }
+
+
         private void UpdateCameraLook()
         {
-            if (!m_CinemachineCameraTarget)
-            {
-                return;
-            }
-
             if (m_InputLook.sqrMagnitude >= _threshold)
             {
                 float deltaTime = IsCurrentMouseAndKeyBoard ? 1.0f : Time.deltaTime;
@@ -275,8 +293,16 @@ namespace TPSHorror.PlayerControllerCharacter
             m_cinemachineTargetYaw = ClampAngle(m_cinemachineTargetYaw, float.MinValue, float.MaxValue);
             m_cinemachineTargetPitch = ClampAngle(m_cinemachineTargetPitch, m_BottomClamp, m_TopClamp);
 
-            m_CinemachineCameraTarget.transform.rotation = Quaternion.Euler(m_cinemachineTargetPitch + m_CameraAngleOverride,
-              m_cinemachineTargetYaw, 0.0f);
+            if (m_CameraTargetStand)
+            {
+                m_CameraTargetStand.transform.rotation = Quaternion.Euler(m_cinemachineTargetPitch + m_CameraAngleOverride,m_cinemachineTargetYaw, 0.0f);
+            }
+           
+
+            if (m_CameraTargetCrouched)
+            {
+                m_CameraTargetCrouched.transform.rotation = Quaternion.Euler(m_cinemachineTargetPitch + m_CameraAngleOverride,m_cinemachineTargetYaw, 0.0f);
+            }
         }
 
 

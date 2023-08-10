@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &74780696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 74780697}
+  m_Layer: 0
+  m_Name: CameraFollowOnCouched
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &74780697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74780696}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 422766203}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,7 +233,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.4, z: -2.5}
+  m_LocalPosition: {x: 0, y: 1.75, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -455,6 +486,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1357467270}
+  - {fileID: 74780697}
   - {fileID: 1444558955}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -473,9 +505,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_WalkSpeed: 2.5
   m_RunSpeed: 6
+  m_CrouchedSpeed: 1.5
   m_RotationSmoothTime: 0.12
   m_AnimationSpeedBlend: 0
-  m_CinemachineCameraTarget: {fileID: 1357467269}
+  m_ThirdPerson: {fileID: 1758635779}
+  m_CameraTargetStand: {fileID: 1357467269}
+  m_CameraTargetCrouched: {fileID: 74780696}
   m_TopClamp: 70
   m_BottomClamp: -30
 --- !u!114 &422766205
@@ -505,7 +540,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 4b7dc7fcf31ec444ab53a25d0f39f551,
     type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -678,7 +713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1357467270}
   m_Layer: 0
-  m_Name: CameraFollow
+  m_Name: CameraFollowOnStanding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,7 +727,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1357467269}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -757,7 +792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0.1, y: 0.25, z: 0.3}
-  ShoulderOffset: {x: 0, y: 1, z: 0}
+  ShoulderOffset: {x: 0, y: 0, z: 0}
   VerticalArmLength: 0.4
   CameraSide: 0.6
   CameraDistance: 2.5
@@ -778,7 +813,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 3a4fd37db95e1c34b9f24e235ce52298,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3a4fd37db95e1c34b9f24e235ce52298,
         type: 3}
@@ -1020,7 +1055,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1758635778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.4, z: -2.5}
+  m_LocalPosition: {x: 0, y: 1.75, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

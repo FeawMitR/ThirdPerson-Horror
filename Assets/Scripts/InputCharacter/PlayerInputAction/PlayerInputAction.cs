@@ -144,6 +144,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5046df34-0f10-4dbc-a7b0-861763ca0f94"",
+                    ""path"": ""<XInputController>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Xbox"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5fce73d8-661b-477d-baaf-d3d4a0a12692"",
                     ""path"": ""<Pointer>/delta"",
                     ""interactions"": """",
@@ -171,6 +182,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": ""InvertVector2(invertX=false),StickDeadzone,ScaleVector2(x=300,y=300)"",
                     ""groups"": ""PlayStation"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5620b4e9-2c07-42c5-8041-0d5d62eec666"",
+                    ""path"": ""<XInputController>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Xbox"",
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -210,11 +232,55 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f3d6a37e-143f-408b-bb50-7f9d082ff54c"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Xbox"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""1e205080-b52c-42ea-a3f3-a21c247ab2ff"",
                     ""path"": ""<Keyboard>/c"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Crouched"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""724cf077-b9cc-446d-bb69-91fbc87855c2"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""GamePad"",
+                    ""action"": ""Crouched"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""12ddf4c7-e070-48d8-b786-4b3da23a9606"",
+                    ""path"": ""<DualShockGamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PlayStation"",
+                    ""action"": ""Crouched"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a00e86dc-8426-4f7c-bb52-02b91a89bbe3"",
+                    ""path"": ""<XInputController>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Xbox"",
                     ""action"": ""Crouched"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -256,6 +322,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
             ""devices"": [
                 {
                     ""devicePath"": ""<DualShockGamepad>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Xbox"",
+            ""bindingGroup"": ""Xbox"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<XInputController>"",
                     ""isOptional"": false,
                     ""isOR"": false
                 }
@@ -406,6 +483,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         {
             if (m_PlayStationSchemeIndex == -1) m_PlayStationSchemeIndex = asset.FindControlSchemeIndex("PlayStation");
             return asset.controlSchemes[m_PlayStationSchemeIndex];
+        }
+    }
+    private int m_XboxSchemeIndex = -1;
+    public InputControlScheme XboxScheme
+    {
+        get
+        {
+            if (m_XboxSchemeIndex == -1) m_XboxSchemeIndex = asset.FindControlSchemeIndex("Xbox");
+            return asset.controlSchemes[m_XboxSchemeIndex];
         }
     }
     public interface IPlayerMapActions
