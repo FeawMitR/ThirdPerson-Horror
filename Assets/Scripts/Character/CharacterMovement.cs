@@ -9,10 +9,8 @@ namespace TPSHorror.Character
     public class CharacterMovement : MonoBehaviour
     {
         private CharacterController m_characterController = null;
-        private float m_MoveSpeed = 5;
-        private static float m_gravity = -9.81f;
-        private float m_RotationSpeed = 5;
 
+        private static float m_gravity = -9.81f;
         private Vector3 m_GravityDirection = Vector3.zero;
 
 
@@ -33,14 +31,14 @@ namespace TPSHorror.Character
             {
                 return;
             }
-                      
-            m_characterController.Move(direction * m_MoveSpeed * Time.deltaTime);
-            GravityMovement(); 
+
+            m_characterController.Move(direction);
+            GravityMovement();
         }
 
         public void Rotation(Quaternion quaternion)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, quaternion,Time.deltaTime*m_RotationSpeed);
+            transform.rotation = quaternion;
         }
 
 
@@ -63,16 +61,6 @@ namespace TPSHorror.Character
             m_characterController.Move(m_GravityDirection * Time.deltaTime);
         }
 
-        public float MoveSpeed
-        {
-            get
-            {
-                return m_MoveSpeed;
-            }
-            set
-            {
-                m_MoveSpeed = value;
-            }
-        }
+     
     }
 }

@@ -9,24 +9,50 @@ namespace TPSHorror.PlayerControllerCharacter
 {
     [RequireComponent(typeof(CharacterMovement))]
     [RequireComponent(typeof(AnimaionCharacter))]
+    [RequireComponent(typeof(PlayerInput))]
     public class PlayerControllerCharacter : MonoBehaviour
     {
+        private PlayerInput m_playerInput = null;
         private PlayerInputAction m_InputAction = null;
         private CharacterMovement m_CharacterMovement = null;
 
-    
-        private Vector2 m_MovementInput = Vector2.zero;
-        private Vector3 m_MovementDirection = Vector3.zero;
+        private const string SchemeKeyboardMouse = "KeyboardMouse";
 
+
+        private Vector2 m_InputDirection = Vector2.zero;
+        private Vector2 m_InputLook = Vector2.zero;
+
+        [Header("Movement")]
         [SerializeField]
         private float m_WalkSpeed = 2.5f;
+  
         [SerializeField]
         private float m_RunSpeed = 5.0f;
+        private bool m_IsRunning = false;
+        private float m_TargetSpeed = 0.0f;
+        [SerializeField]
+        private float m_RotationSmoothTime = 0.12f;
+        private const float m_SpeedChangeRate = 10.0f;
 
         [SerializeField]
-        private bool m_IsRunning = false;
+        private float m_AnimationSpeedBlend = 0;
+
+        private float m_targetRotation = 0.0f;
+        private float m_rotationVelocity;
+
+        [Header("Camera")]
         [SerializeField]
-        private float m_runLengthInput = 0;
+        private GameObject m_CinemachineCameraTarget = null;
+        private float m_CameraAngleOverride = 0.0f;
+
+        private float m_cinemachineTargetYaw;
+        private float m_cinemachineTargetPitch;
+        [SerializeField]
+        private float m_TopClamp = 70.0f;
+        [SerializeField]
+        private float m_BottomClamp = -30.0f;
+        
+        private const float _threshold = 0.01f;
 
         private AnimaionCharacter m_AnimaionCharacter = null;
 
@@ -40,11 +66,15 @@ namespace TPSHorror.PlayerControllerCharacter
             UnInitialized();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             UpdateMovementDirection();
         }
 
+        private void LateUpdate()
+        {
+            UpdateCameraLook();
+        }
 
         private void Initialized()
         {
@@ -59,14 +89,18 @@ namespace TPSHorror.PlayerControllerCharacter
             UnInitializeInputAction();
         }
 
-
+        #region Input
         private void InitializeInputAction()
         {
+            m_playerInput = this.GetComponent<PlayerInput>();
             m_InputAction = new PlayerInputAction();
 
 
             m_InputAction.PlayerMap.Movement.performed += OnMovementInput;
             m_InputAction.PlayerMap.Movement.canceled += OnMovementInput;
+
+            m_InputAction.PlayerMap.Look.performed += OnLookInput;
+            m_InputAction.PlayerMap.Look.canceled += OnLookInput;
 
             m_InputAction.PlayerMap.Run.performed += OnRunInput;
             m_InputAction.PlayerMap.Run.canceled += OnRunInput;
@@ -80,6 +114,11 @@ namespace TPSHorror.PlayerControllerCharacter
             m_InputAction.PlayerMap.Movement.performed -= OnMovementInput;
             m_InputAction.PlayerMap.Movement.canceled -= OnMovementInput;
 
+            m_InputAction.PlayerMap.Look.performed -= OnLookInput;
+            m_InputAction.PlayerMap.Look.canceled -= OnLookInput;
+
+            m_InputAction.PlayerMap.Run.performed -= OnRunInput;
+            m_InputAction.PlayerMap.Run.canceled -= OnRunInput;
 
             StopOperation();
         }
@@ -87,21 +126,26 @@ namespace TPSHorror.PlayerControllerCharacter
         public void StartOperation()
         {
             m_InputAction.PlayerMap.Enable();
-            Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.lockState = CursorLockMode.Locked;
             //Cursor.visible = false;
         }
 
         public void StopOperation() 
         {
             m_InputAction.PlayerMap.Disable();
-            Cursor.lockState = CursorLockMode.None;
+            //Cursor.lockState = CursorLockMode.None;
             //Cursor.visible = true;
         }
 
 
         private void OnMovementInput(InputAction.CallbackContext context)
         {
-            m_MovementInput = context.ReadValue<Vector2>();
+            m_InputDirection = context.ReadValue<Vector2>();
+        }
+
+        private void OnLookInput(InputAction.CallbackContext context)
+        {
+            m_InputLook = context.ReadValue<Vector2>();
         }
 
         private void OnRunInput(InputAction.CallbackContext context)
@@ -110,68 +154,96 @@ namespace TPSHorror.PlayerControllerCharacter
             switch (context.phase)
             {
                 case InputActionPhase.Performed:
-                    if(m_MovementInput != Vector2.zero)
-                    {
-                        m_IsRunning = true;
-                    }
-                    else
-                    {
-                        m_IsRunning = false;
-                    }
-                   
-                    //m_runLengthInput = 1.0f;
-                    //m_CharacterMovement.MoveSpeed = m_RunSpeed;
+                    m_IsRunning = true;
+
                     break;
 
                 case InputActionPhase.Canceled:
                     m_IsRunning = false;
-                    //m_runLengthInput = 0.0f;
-                    //m_CharacterMovement.MoveSpeed = m_WalkSpeed;
                     break;
             }
             //m_MovementInput = context.ReadValue<Vector2>();
         }
 
-        private void UpdateMovementDirection()
+        private bool IsCurrentMouseAndKeyBoard
         {
-        
-            if (m_MovementInput != Vector2.zero)
+            get
             {
-                Vector3 newInput = new Vector3(m_MovementInput.x,0, m_MovementInput.y);
-                float targetRotation = Quaternion.LookRotation(newInput).eulerAngles.y + Camera.main.transform.rotation.eulerAngles.y;
-                Quaternion rotation = Quaternion.Euler(0,targetRotation,0);
-                m_CharacterMovement.Rotation(rotation);
-                m_MovementDirection = Quaternion.Euler(0, targetRotation, 0) * Vector3.forward;
-                //Debug.LogError($"m_MovementDirection : {m_MovementDirection}");
-                //m_MovementDirection = Vector3.ClampMagnitude(m_MovementDirection, 1);
+                return m_playerInput.currentControlScheme == SchemeKeyboardMouse;
             }
-            else
-            {
-                m_MovementDirection = Vector3.zero;
-            }
-
-            if (m_IsRunning)
-            {
-                m_CharacterMovement.MoveSpeed = m_RunSpeed;
-                m_runLengthInput = 1.0f;
-            }
-            else
-            {
-                m_CharacterMovement.MoveSpeed = m_WalkSpeed;
-                m_runLengthInput = 0.0f;
-            }
-
-            m_CharacterMovement.Move(m_MovementDirection);
-            m_AnimaionCharacter.UpdateSpeedMovementAnimation(m_MovementDirection.magnitude + m_runLengthInput);
         }
 
+        #endregion Input
+        private void UpdateMovementDirection()
+        {
+            m_TargetSpeed = m_IsRunning ?  m_RunSpeed : m_WalkSpeed;
+            if(m_InputDirection == Vector2.zero)
+            {
+                m_TargetSpeed = 0.0f;
+            }
+
+            m_AnimationSpeedBlend = Mathf.Lerp(m_AnimationSpeedBlend, m_TargetSpeed,Time.deltaTime * m_SpeedChangeRate);
+            if(m_AnimationSpeedBlend < 0.01f)
+            {
+                m_AnimationSpeedBlend = 0.0f;
+            }
+
+            Vector3 inputDirection = new Vector3(m_InputDirection.x,0, m_InputDirection.y).normalized;
+            if (m_InputDirection != Vector2.zero)
+            {
+                m_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + Camera.main.transform.rotation.eulerAngles.y;
+                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y,m_targetRotation, ref m_rotationVelocity, m_RotationSmoothTime);
+                Quaternion rot = Quaternion.Euler(0, rotation, 0);
+                m_CharacterMovement.Rotation(rot);
+            }
+           
+            Vector3 targetDirection = Quaternion.Euler(0, m_targetRotation,0) * Vector3.forward;
+
+            m_CharacterMovement.Move(targetDirection.normalized *(m_TargetSpeed * Time.deltaTime));
+            m_AnimaionCharacter.UpdateSpeedMovementAnimation(m_AnimationSpeedBlend);
+        }
+
+        private void UpdateCameraLook()
+        {
+            if (!m_CinemachineCameraTarget)
+            {
+                return;
+            }
+
+            if (m_InputLook.sqrMagnitude >= _threshold)
+            {
+                float deltaTime = IsCurrentMouseAndKeyBoard ? 1.0f : Time.deltaTime;
+                m_cinemachineTargetYaw += m_InputLook.x * deltaTime;
+                m_cinemachineTargetPitch += m_InputLook.y * deltaTime;
+            }
+
+            m_cinemachineTargetYaw = ClampAngle(m_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            m_cinemachineTargetPitch = ClampAngle(m_cinemachineTargetPitch, m_BottomClamp, m_TopClamp);
+
+            m_CinemachineCameraTarget.transform.rotation = Quaternion.Euler(m_cinemachineTargetPitch + m_CameraAngleOverride,
+              m_cinemachineTargetYaw, 0.0f);
+        }
 
 
         private void InitializeCharacterMovement()
         {
             m_CharacterMovement = this.GetComponent<CharacterMovement>();
+        }
 
-            m_CharacterMovement.MoveSpeed = m_WalkSpeed;
+
+
+
+
+
+
+
+
+
+        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
+        {
+            if (lfAngle < -360f) lfAngle += 360f;
+            if (lfAngle > 360f) lfAngle -= 360f;
+            return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
     }
 }
