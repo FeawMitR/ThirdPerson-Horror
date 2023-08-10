@@ -22,6 +22,12 @@ namespace TPSHorror.PlayerControllerCharacter
         private Vector2 m_InputDirection = Vector2.zero;
         private Vector2 m_InputLook = Vector2.zero;
 
+        //public enum MovementType
+        //{
+        //    Walk,Running,Crouched
+        //}
+
+        //private MovementType movementType = MovementType.Walk;
         [Header("Movement")]
         [SerializeField]
         private float m_WalkSpeed = 2.5f;
@@ -29,7 +35,13 @@ namespace TPSHorror.PlayerControllerCharacter
         [SerializeField]
         private float m_RunSpeed = 5.0f;
         private bool m_IsRunning = false;
+
+        [SerializeField]
+        private float m_CrouchedSpeed = 1.5f;
+        private bool m_IsCrouched = false;
+
         private float m_TargetSpeed = 0.0f;
+
         [SerializeField]
         private float m_RotationSmoothTime = 0.12f;
         private const float m_SpeedChangeRate = 10.0f;
@@ -105,6 +117,8 @@ namespace TPSHorror.PlayerControllerCharacter
             m_InputAction.PlayerMap.Run.performed += OnRunInput;
             m_InputAction.PlayerMap.Run.canceled += OnRunInput;
 
+            m_InputAction.PlayerMap.Crouched.started += OnCrouchedInput;
+
             //TODO : Remove
             StartOperation();
         }
@@ -119,6 +133,8 @@ namespace TPSHorror.PlayerControllerCharacter
 
             m_InputAction.PlayerMap.Run.performed -= OnRunInput;
             m_InputAction.PlayerMap.Run.canceled -= OnRunInput;
+
+            m_InputAction.PlayerMap.Crouched.started -= OnCrouchedInput;
 
             StopOperation();
         }
@@ -150,12 +166,15 @@ namespace TPSHorror.PlayerControllerCharacter
 
         private void OnRunInput(InputAction.CallbackContext context)
         {
-            //Debug.LogError(context.phase);
             switch (context.phase)
             {
                 case InputActionPhase.Performed:
                     m_IsRunning = true;
-
+                    if (m_IsCrouched)
+                    {
+                        m_IsCrouched = false;
+                        m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
+                    }
                     break;
 
                 case InputActionPhase.Canceled:
@@ -163,6 +182,23 @@ namespace TPSHorror.PlayerControllerCharacter
                     break;
             }
             //m_MovementInput = context.ReadValue<Vector2>();
+        }
+
+        private void OnCrouchedInput(InputAction.CallbackContext context)
+        {
+            if(context.phase != InputActionPhase.Started)
+            {
+                return;
+            }
+
+            bool isCrouched = !m_IsCrouched;
+            if (m_IsRunning)
+            {
+                isCrouched = false;
+            }
+
+            m_IsCrouched = isCrouched;
+            m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
         }
 
         private bool IsCurrentMouseAndKeyBoard
@@ -176,7 +212,8 @@ namespace TPSHorror.PlayerControllerCharacter
         #endregion Input
         private void UpdateMovementDirection()
         {
-            m_TargetSpeed = m_IsRunning ?  m_RunSpeed : m_WalkSpeed;
+            m_TargetSpeed = GetTargetSpeed;
+
             if(m_InputDirection == Vector2.zero)
             {
                 m_TargetSpeed = 0.0f;
@@ -201,6 +238,24 @@ namespace TPSHorror.PlayerControllerCharacter
 
             m_CharacterMovement.Move(targetDirection.normalized *(m_TargetSpeed * Time.deltaTime));
             m_AnimaionCharacter.UpdateSpeedMovementAnimation(m_AnimationSpeedBlend);
+        }
+
+        private float GetTargetSpeed
+        {
+            get
+            {
+                if (m_IsCrouched)
+                {
+                    return m_CrouchedSpeed;
+                }
+
+                if (m_IsRunning)
+                {
+                    return m_RunSpeed;
+                }
+
+                return m_WalkSpeed;
+            }
         }
 
         private void UpdateCameraLook()
@@ -229,10 +284,6 @@ namespace TPSHorror.PlayerControllerCharacter
         {
             m_CharacterMovement = this.GetComponent<CharacterMovement>();
         }
-
-
-
-
 
 
 

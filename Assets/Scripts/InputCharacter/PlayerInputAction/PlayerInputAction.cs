@@ -53,6 +53,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouched"",
+                    ""type"": ""Button"",
+                    ""id"": ""7ac55e59-14f4-4b7b-8dda-ab282680606c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -198,6 +207,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e205080-b52c-42ea-a3f3-a21c247ab2ff"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Crouched"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -248,6 +268,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_PlayerMap_Movement = m_PlayerMap.FindAction("Movement", throwIfNotFound: true);
         m_PlayerMap_Look = m_PlayerMap.FindAction("Look", throwIfNotFound: true);
         m_PlayerMap_Run = m_PlayerMap.FindAction("Run", throwIfNotFound: true);
+        m_PlayerMap_Crouched = m_PlayerMap.FindAction("Crouched", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -310,6 +331,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMap_Movement;
     private readonly InputAction m_PlayerMap_Look;
     private readonly InputAction m_PlayerMap_Run;
+    private readonly InputAction m_PlayerMap_Crouched;
     public struct PlayerMapActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -317,6 +339,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_PlayerMap_Movement;
         public InputAction @Look => m_Wrapper.m_PlayerMap_Look;
         public InputAction @Run => m_Wrapper.m_PlayerMap_Run;
+        public InputAction @Crouched => m_Wrapper.m_PlayerMap_Crouched;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -335,6 +358,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Run.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnRun;
+                @Crouched.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouched;
+                @Crouched.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouched;
+                @Crouched.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnCrouched;
             }
             m_Wrapper.m_PlayerMapActionsCallbackInterface = instance;
             if (instance != null)
@@ -348,6 +374,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
+                @Crouched.started += instance.OnCrouched;
+                @Crouched.performed += instance.OnCrouched;
+                @Crouched.canceled += instance.OnCrouched;
             }
         }
     }
@@ -384,5 +413,6 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnCrouched(InputAction.CallbackContext context);
     }
 }
