@@ -61,6 +61,6 @@ namespace TPSHorror.Character
             m_characterController.Move(m_GravityDirection * Time.deltaTime);
         }
 
-     
+  
     }
 }

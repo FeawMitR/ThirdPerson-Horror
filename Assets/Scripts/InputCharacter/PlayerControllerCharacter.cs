@@ -13,6 +13,8 @@ namespace TPSHorror.PlayerControllerCharacter
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerControllerCharacter : MonoBehaviour
     {
+        private bool m_IsOperating = false;
+
         private PlayerInput m_playerInput = null;
         private PlayerInputAction m_InputAction = null;
         private CharacterMovement m_CharacterMovement = null;
@@ -23,12 +25,6 @@ namespace TPSHorror.PlayerControllerCharacter
         private Vector2 m_InputDirection = Vector2.zero;
         private Vector2 m_InputLook = Vector2.zero;
 
-        //public enum MovementType
-        //{
-        //    Walk,Running,Crouched
-        //}
-
-        //private MovementType movementType = MovementType.Walk;
         [Header("Movement")]
         [SerializeField]
         private float m_WalkSpeed = 2.5f;
@@ -61,6 +57,7 @@ namespace TPSHorror.PlayerControllerCharacter
         private GameObject m_CameraTargetStand = null;
         [SerializeField]
         private GameObject m_CameraTargetCrouched = null;
+        private GameObject m_CameraTarget = null;
 
         private float m_CameraAngleOverride = 0.0f;
 
@@ -69,11 +66,20 @@ namespace TPSHorror.PlayerControllerCharacter
         [SerializeField]
         private float m_TopClamp = 70.0f;
         [SerializeField]
-        private float m_BottomClamp = -30.0f;
-        
+        private float m_BottomClamp = -30.0f;  
         private const float _threshold = 0.01f;
 
         private AnimaionCharacter m_AnimaionCharacter = null;
+
+        [Header("Interaction")]
+        [SerializeField]
+        private float m_RadiusFindInteraction = 1.0f;
+        [SerializeField]
+        private float m_MaxLegnthFindInteraction = 3.0f;
+        private float m_LegnthFindInteraction = 0.0f;
+        private int m_InteractionIgnoreLayer = 6;
+        private LayerMask m_InteractionLayerMask;
+
 
         private void Awake()
         {
@@ -87,13 +93,53 @@ namespace TPSHorror.PlayerControllerCharacter
 
         private void Update()
         {
+            if (!m_IsOperating)
+            {
+                return;
+            }
+
             UpdateMovementDirection();
         }
 
         private void LateUpdate()
         {
+            if (!m_IsOperating)
+            {
+                return;
+            }
+
             UpdateCameraLook();
         }
+
+        private void FixedUpdate()
+        {
+            if (!m_IsOperating)
+            {
+                return;
+            }
+
+            FindObjectToInteraction();
+        }
+
+
+        public void StartOperation()
+        {
+            m_InputAction.PlayerMap.Enable();
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+
+            m_IsOperating = true;
+        }
+
+        public void StopOperation()
+        {
+            m_InputAction.PlayerMap.Disable();
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
+
+            m_IsOperating = false;
+        }
+
 
         private void Initialized()
         {
@@ -102,6 +148,8 @@ namespace TPSHorror.PlayerControllerCharacter
 
             m_AnimaionCharacter = this.GetComponent<AnimaionCharacter>();
             onCrouchedHandler?.Invoke(false);
+
+            m_InteractionLayerMask = ~(1 << m_InteractionIgnoreLayer);
         }
 
         private void UnInitialized()
@@ -149,19 +197,7 @@ namespace TPSHorror.PlayerControllerCharacter
             StopOperation();
         }
 
-        public void StartOperation()
-        {
-            m_InputAction.PlayerMap.Enable();
-            //Cursor.lockState = CursorLockMode.Locked;
-            //Cursor.visible = false;
-        }
-
-        public void StopOperation() 
-        {
-            m_InputAction.PlayerMap.Disable();
-            //Cursor.lockState = CursorLockMode.None;
-            //Cursor.visible = true;
-        }
+     
 
 
         private void OnMovementInput(InputAction.CallbackContext context)
@@ -217,6 +253,8 @@ namespace TPSHorror.PlayerControllerCharacter
         }
 
         #endregion Input
+
+        #region Movement,Look & Crouched
         private void UpdateMovementDirection()
         {
             m_TargetSpeed = GetTargetSpeed;
@@ -270,14 +308,16 @@ namespace TPSHorror.PlayerControllerCharacter
             m_IsCrouched = isCrouhced;
             m_AnimaionCharacter.UpdateIsCrouchedAnimation(m_IsCrouched);
             
+          
             if (!m_IsCrouched)
             {
-                m_ThirdPerson.m_Follow = m_CameraTargetStand.transform;
+                m_CameraTarget = m_CameraTargetStand;
             }
             else
             {
-                m_ThirdPerson.m_Follow = m_CameraTargetCrouched.transform;
+                m_CameraTarget = m_CameraTargetCrouched;
             }
+            m_ThirdPerson.m_Follow = m_CameraTarget.transform;
         }
 
 
@@ -311,10 +351,64 @@ namespace TPSHorror.PlayerControllerCharacter
             m_CharacterMovement = this.GetComponent<CharacterMovement>();
         }
 
+        #endregion Movement,Look & Crouched
 
 
+       
+        private void FindObjectToInteraction()
+        {
 
+            RaycastHit[] hits = Physics.SphereCastAll(m_CameraTarget.transform.position, m_RadiusFindInteraction, m_CameraTarget.transform.forward
+                , m_LegnthFindInteraction, m_InteractionLayerMask);
+            if (hits == null || hits.Length <= 0)
+            {
+                m_LegnthFindInteraction = m_MaxLegnthFindInteraction;
+            }
+            else
+            {
+                GetInteraction(hits,out m_LegnthFindInteraction);
+            }
+        }
 
+        private void GetInteraction(RaycastHit[] hits,out float distance)
+        {
+            bool isFound = false;
+            float newDistance = 0;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if(hits[i].collider.gameObject.layer == 7)
+                {
+                    isFound = true;
+                    newDistance = hits[i].distance;
+                    break;
+                }
+            }
+
+            if (!isFound)
+            {
+                distance = m_MaxLegnthFindInteraction;
+            }
+            else
+            {
+                distance = newDistance;
+            }
+            
+        } 
+
+        private void OnDrawGizmos()
+        {
+            if (!m_CameraTarget)
+            {
+                return;
+            }
+
+            Vector3 testOrigin = m_CameraTarget.transform.position;
+            Vector3 testDirection = m_CameraTarget.transform.forward;
+
+            Gizmos.color = Color.red;
+            Debug.DrawLine(testOrigin, testOrigin + testDirection * m_LegnthFindInteraction );
+            Gizmos.DrawWireSphere(testOrigin + testDirection * m_LegnthFindInteraction , m_RadiusFindInteraction);
+        }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
