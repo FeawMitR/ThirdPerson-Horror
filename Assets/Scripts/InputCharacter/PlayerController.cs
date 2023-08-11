@@ -86,9 +86,9 @@ namespace TPSHorror.PlayerControllerCharacter
         private float m_MaxLegnthFindInteraction = 3.0f;
         private int m_InteractionIgnoreLayer = 6;
         private int m_InteractionAbleLayer = 7;
-        [SerializeField]
+        //[SerializeField]
         private LayerMask m_InteractionLayerMask;
-        [SerializeField]
+        //[SerializeField]
         private LayerMask m_InteractionAbleLayerMask;
         private IInteractAble m_CurrentInteraction = null;
 
@@ -446,15 +446,15 @@ namespace TPSHorror.PlayerControllerCharacter
                 IInteractAble interactAble = GetInteractAbleInArray(hitColliders);
                 if (interactAble != null)
                 {
-                    Debug.LogError($"interactAble {interactAble}");
-                    RaycastHit hit;
-                    if (Physics.Raycast(m_CameraTarget.transform.position, m_ThirdPerson.transform.forward, out hit,m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
+                    //Debug.LogError($"interactAble {interactAble}");
+    
+                    if (Physics.Raycast(m_CameraTarget.transform.position, m_CameraTarget.transform.forward, out RaycastHit hit, m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
                     {
-                        Debug.LogError($"interactAble C {hit.collider}");
+                        //Debug.LogError($"interactAble C {hit.collider}");
                         IInteractAble hitInteractAble = hit.collider.GetComponent<IInteractAble>();
                         if(hitInteractAble != null && interactAble == hitInteractAble)
                         {
-                            Debug.LogError($"Found {hit.collider}");
+                            //Debug.LogError($"Found {hit.collider}");
                             m_CurrentInteraction = hitInteractAble;
                             var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
                             //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
@@ -468,7 +468,6 @@ namespace TPSHorror.PlayerControllerCharacter
                     }
                     else
                     {
-                        Debug.LogError($"interactAble F ");
                         InteractionManager.Instance.CloseUIInteract();
                         m_CurrentInteraction = null;
                     }
