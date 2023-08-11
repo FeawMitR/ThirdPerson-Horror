@@ -40,14 +40,21 @@ namespace TPSHorror
         [Header("Perception Sensor")]
         [SerializeField]
         private Transform m_TargetHunting = null;
-        [Header("Perception Sensor FieldOfView",order = 1)]
         [SerializeField]
         private PerceptionFieldOfViewSensor m_FieldOfViewSensorSensors = null;
+
+        [Header("Perception Sensor FieldOfView Not Hunting",order = 1)]
         [SerializeField]
         private float m_FindNotHuntingRadius = 5.0f;
         [SerializeField]
         private float m_FindNotHuntingDangerRadius = 3.0f;
-
+        [Header("Perception Sensor FieldOfView Hunting", order = 1)]
+        [SerializeField]
+        private float m_FindHuntingRadius = 10.0f;
+        [SerializeField]
+        private float m_HuntingMaxRadius = 15.0f;
+        [SerializeField]
+        private float m_HuntingDangerRadius = 2.0f;
 
         private void Awake()
         {
@@ -56,7 +63,7 @@ namespace TPSHorror
 
         private void Start()
         {
-            //ToDo : Remove
+            //TODO Remove
             StartOperation();
         }
 
@@ -81,6 +88,7 @@ namespace TPSHorror
         public void StopOperation()
         {
             m_IsOperating = false;
+            StopAllCoroutines();
         }
 
         private void Update()
@@ -88,13 +96,6 @@ namespace TPSHorror
             if (!m_IsOperating)
             {
                 return;
-            }
-
-            switch (m_EnemyState)
-            {
-                case EnemyState.Patrolling:
-                    UpdatePatrolling();
-                    break;
             }
         }
 
@@ -116,18 +117,25 @@ namespace TPSHorror
             }
         }
 
-    
+        #region Patrol
 
         private void StartPatrolState()
         {
+            Debug.Log($"StartPatrolState");
             m_EnemyState = EnemyState.Patrolling;
             m_Agent.speed = m_WalkSpeed;
+            m_Agent.acceleration = m_WalkSpeed * 2;
+            m_Agent.stoppingDistance = 0;
+
+            StopAllCoroutines();
+
             StartCurrentPatrol();
             StartFieldOfViewSensorSensorsNotHunting();
         }
 
         private void StopPatrolState()
         {
+            Debug.Log($"StopPatrolState");
             m_Agent.SetDestination(this.transform.position);
         }
 
@@ -137,6 +145,7 @@ namespace TPSHorror
 
             m_Agent.SetDestination(destiation);
             m_IsMoving = true;
+            StartCoroutine(CheckPatrollingState());
         }
 
         private void FinishedCurrentPatrol()
@@ -147,23 +156,30 @@ namespace TPSHorror
             StartCurrentPatrol();
         }
 
-        private void UpdatePatrolling()
+
+        private IEnumerator CheckPatrollingState()
         {
-            if (IsPathComplete)
+            while (!IsPathComplete)
             {
-                if (m_IsMoving)
-                {
-                    FinishedCurrentPatrol();
-                }
+                yield return 0;
+            }
+
+            float randomDelay = Random.Range(0.5f,1.2f);
+            yield return new WaitForSeconds(randomDelay);
+            if (m_IsMoving)
+            {
+                FinishedCurrentPatrol();
             }
         }
-
+     
+        #endregion Patrol
 
 
         private void StartFieldOfViewSensorSensorsNotHunting()
         {
             m_FieldOfViewSensorSensors.ViewRadius = m_FindNotHuntingRadius;
             m_FieldOfViewSensorSensors.ViewNearRadius = m_FindNotHuntingDangerRadius;
+            m_FieldOfViewSensorSensors.IsIgnorViewNearRadius = false;
             m_FieldOfViewSensorSensors.StartSensor();
             StartCoroutine(FindTargetNotHuntingState());
         }
@@ -185,23 +201,107 @@ namespace TPSHorror
 
         private void FoundTargetNotHunting()
         {
-            Debug.LogError($"Found Target : {m_TargetHunting.name}");
+            //Debug.LogError($"Found Target : {m_TargetHunting.name}");
             StopFieldOfViewSensorSensorsNotHunting();
             if(m_EnemyState == EnemyState.Patrolling)
             {
                 StopPatrolState();
             }
+
             StartHuntingState();
         }
 
 
 
-
+        #region Hunting
 
 
         private void StartHuntingState()
         {
+            Debug.Log($"StartHuntingState");
             m_EnemyState = EnemyState.Hunting;
+            m_Agent.speed = m_RunSpeed;
+            m_Agent.acceleration = m_RunSpeed * 2;
+            m_Agent.stoppingDistance = m_HuntingDangerRadius;
+
+            StopAllCoroutines();
+
+            StartCoroutine(FindTargetHuntingState());            
         }
+
+        private void StopHuntingState()
+        {
+            Debug.Log($"StopHuntingState");
+            m_TargetHunting = null;
+            m_Agent.SetDestination(this.transform.position);
+        }
+
+
+        private IEnumerator FindTargetHuntingState()
+        {
+            Vector3 target = m_TargetHunting.position;
+            m_Agent.SetDestination(target);
+            m_IsMoving = true;
+            Vector3 direction = (target - this.transform.position).normalized;
+            transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+           
+            while (m_TargetHunting != null && !IsPathComplete)
+            {
+                yield return new WaitForSeconds(0.5f);
+                float distance = Vector3.Distance(transform.position, m_TargetHunting.position);
+    
+                if (m_TargetHunting)
+                {
+                    target = m_TargetHunting.position;
+                }
+
+                if (distance >= m_FindHuntingRadius)
+                {
+                    m_TargetHunting = null;
+                }
+                m_Agent.SetDestination(target);
+              
+                yield return 0;
+            }
+
+            m_IsMoving = false;
+            if (m_TargetHunting == null)
+            {
+                TargetOutOfLength();
+            }
+            else
+            {
+                if (IsPathComplete)
+                {
+                    Vector3 directionToTarget = (m_TargetHunting.transform.position - transform.position).normalized;
+                    float distance = Vector3.Distance(transform.position, m_TargetHunting.position);
+                    if (!m_FieldOfViewSensorSensors.IsObstacleBlock(directionToTarget, distance))
+                    {
+                        //TODO Fix
+                        StopHuntingState();
+                        Debug.LogError($"End Game");
+                    }
+                    else
+                    {
+                        m_TargetHunting = null;
+                        TargetOutOfLength();
+
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"WTF ?");
+                }
+            } 
+        }
+
+
+        //Stop Go To Patrol
+        private void TargetOutOfLength()
+        {
+            StopHuntingState();
+            StartPatrolState();
+        }
+        #endregion Hunting
     }
 }

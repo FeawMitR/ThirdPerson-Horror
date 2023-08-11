@@ -191,6 +191,7 @@ namespace TPSHorror.PlayerControllerCharacter
             onCrouchedHandler += OnCrouched;
 
             m_InputAction.PlayerMap.Interaction.started += OnInteractionInput;
+
             //TODO : Remove
             StartOperation();
         }

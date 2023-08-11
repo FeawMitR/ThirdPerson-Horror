@@ -15,10 +15,14 @@ namespace TPSHorror.PerceptionSystem
         [SerializeField,Range(30.0f,90.0f)]
         private float m_ViewAngle = 90.0f;
 
+        private bool m_IsIgnorViewNearRadius = false;
+
         [SerializeField]
         private LayerMask m_TargetMask;
         [SerializeField]
         private LayerMask m_ObstacleMask;
+
+
 
         public float ViewRadius
         {
@@ -44,6 +48,17 @@ namespace TPSHorror.PerceptionSystem
             }
         }
 
+        public bool IsIgnorViewNearRadius
+        {
+            get
+            {
+                return m_IsIgnorViewNearRadius;
+            }
+            set
+            {
+                m_IsIgnorViewNearRadius = value;
+            }
+        }
 
 
         public override void SensorOperatingSign(out Transform target)
@@ -80,36 +95,31 @@ namespace TPSHorror.PerceptionSystem
                 if (sign)
                 {
                     Transform target = sign.SignTransform;
-                    //Debug.LogError($"Target Found : {target}");
                     Vector3 directionToTarget = (target.position - transform.position).normalized;
 
                     float distance = Vector3.Distance(transform.position, target.position);
-                    Debug.LogError($"distance : {distance} : {m_ViewNearRadius}");
 
-                    if(distance <= m_ViewNearRadius)
+                    if(distance <= m_ViewNearRadius && !m_IsIgnorViewNearRadius)
                     {
-                        if (!Physics.Raycast(transform.position, directionToTarget, distance, m_ObstacleMask))
+                        if (!IsObstacleBlock(directionToTarget, distance))
                         {
-                            //Debug.LogError($"Target is Not behind Obstacle : {target}");
 #if UNITY_EDITOR
                             m_VisibleTarget.Add(target);
+                            return target;
 #endif
-                            return targetsViewRadius[i].transform;
                         }
                     }
                     else
                     {
-                        if (Vector3.Angle(transform.forward, directionToTarget) < m_ViewAngle / 2)
+                        Vector3 newDirection = new Vector3(directionToTarget.x,0, directionToTarget.z);
+                        if (Vector3.Angle(transform.forward, newDirection) < m_ViewAngle / 2)
                         {
-                            //Debug.LogError($"Target In View : {target}");
-
-                            if (!Physics.Raycast(transform.position, directionToTarget, distance, m_ObstacleMask))
+                            if (!IsObstacleBlock(directionToTarget, distance))
                             {
-                                //Debug.LogError($"Target is Not behind Obstacle : {target}");
 #if UNITY_EDITOR
                                 m_VisibleTarget.Add(target);
+                                return target;
 #endif
-                                return targetsViewRadius[i].transform;
                             }
                         }
                     }
@@ -119,6 +129,11 @@ namespace TPSHorror.PerceptionSystem
             }
 
             return null;
+        }
+
+        public bool IsObstacleBlock(Vector3 direction,float distance)
+        {
+            return Physics.Raycast(transform.position, direction, distance, m_ObstacleMask);
         }
 
 
