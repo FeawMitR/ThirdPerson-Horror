@@ -60,11 +60,6 @@ namespace TPSHorror
             Initialized();
         }
 
-        private void Start()
-        {
-            //TODO Remove
-            StartOperation();
-        }
 
         private void Initialized()
         {

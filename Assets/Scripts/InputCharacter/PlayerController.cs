@@ -1,5 +1,4 @@
 using Cinemachine;
-using System.Linq;
 using TPSHorro.AnimaionCharacter;
 using TPSHorror.Character;
 using TPSHorror.Interaction;
@@ -13,7 +12,7 @@ namespace TPSHorror.PlayerControllerCharacter
     [RequireComponent(typeof(AnimaionCharacter))]
     [RequireComponent(typeof(PlayerInput))]
     [RequireComponent(typeof(PerceptionFieldOfViewSign))]
-    public class PlayerControllerCharacter : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         private bool m_IsOperating = false;
 
@@ -86,7 +85,11 @@ namespace TPSHorror.PlayerControllerCharacter
         [SerializeField]
         private float m_MaxLegnthFindInteraction = 3.0f;
         private int m_InteractionIgnoreLayer = 6;
+        private int m_InteractionAbleLayer = 7;
+        [SerializeField]
         private LayerMask m_InteractionLayerMask;
+        [SerializeField]
+        private LayerMask m_InteractionAbleLayerMask;
         private IInteractAble m_CurrentInteraction = null;
 
         [Header("Perception FieldOfView Sign")]
@@ -192,8 +195,6 @@ namespace TPSHorror.PlayerControllerCharacter
 
             m_InputAction.PlayerMap.Interaction.started += OnInteractionInput;
 
-            //TODO : Remove
-            StartOperation();
         }
 
         private void UnInitializeInputAction()
@@ -427,6 +428,7 @@ namespace TPSHorror.PlayerControllerCharacter
         private void InitializeInteractionCheck()
         {
             m_InteractionLayerMask = ~(1 << m_InteractionIgnoreLayer);
+            m_InteractionAbleLayerMask = 1 << m_InteractionAbleLayer;
             //m_InteractionLayerMask = 1 << 7;
         }
 
@@ -444,12 +446,15 @@ namespace TPSHorror.PlayerControllerCharacter
                 IInteractAble interactAble = GetInteractAbleInArray(hitColliders);
                 if (interactAble != null)
                 {
+                    Debug.LogError($"interactAble {interactAble}");
                     RaycastHit hit;
-                    if (Physics.Raycast(m_CameraTarget.transform.position, m_ThirdPerson.transform.forward, out hit,m_MaxLegnthFindInteraction, m_InteractionLayerMask))
+                    if (Physics.Raycast(m_CameraTarget.transform.position, m_ThirdPerson.transform.forward, out hit,m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
                     {
+                        Debug.LogError($"interactAble C {hit.collider}");
                         IInteractAble hitInteractAble = hit.collider.GetComponent<IInteractAble>();
                         if(hitInteractAble != null && interactAble == hitInteractAble)
                         {
+                            Debug.LogError($"Found {hit.collider}");
                             m_CurrentInteraction = hitInteractAble;
                             var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
                             //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
@@ -463,6 +468,7 @@ namespace TPSHorror.PlayerControllerCharacter
                     }
                     else
                     {
+                        Debug.LogError($"interactAble F ");
                         InteractionManager.Instance.CloseUIInteract();
                         m_CurrentInteraction = null;
                     }
