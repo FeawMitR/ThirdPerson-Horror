@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TPSHorror.Interaction;
+using System;
 
 namespace TPSHorror
 {
@@ -19,5 +20,22 @@ namespace TPSHorror
         }
 
         public Vector3 Pos => UiOffset + this.transform.position;
+
+        public event EventHandler<IInteractAble> OnStartInteract;
+        public event EventHandler<IInteractAble> OnFinishedInteract;
+
+        public void StartInteract()
+        {
+            OnStartInteract?.Invoke(this,this);
+            Debug.Log($"Start Interact {this.gameObject.name}");
+            FinishedInteract();
+        }
+
+        public void FinishedInteract()
+        {
+            OnFinishedInteract?.Invoke(this,this);
+            Debug.Log($"Finished Interact {this.gameObject.name}");
+            Destroy(this.gameObject);
+        }
     }
 }

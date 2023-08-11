@@ -38,6 +38,13 @@ namespace TPSHorror.PlayerControllerCharacter
         private bool m_IsCrouched = false;
         private System.Action<bool> onCrouchedHandler;
 
+        [SerializeField]
+        private float m_heightStand = 2.0f;
+        [SerializeField]
+        private float m_heightCrouched = 1.0f;
+
+
+
         private float m_TargetSpeed = 0.0f;
 
         [SerializeField]
@@ -150,7 +157,6 @@ namespace TPSHorror.PlayerControllerCharacter
             m_AnimaionCharacter = this.GetComponent<AnimaionCharacter>();
             onCrouchedHandler?.Invoke(false);
 
-            
         }
 
         private void UnInitialized()
@@ -281,8 +287,11 @@ namespace TPSHorror.PlayerControllerCharacter
                 return;
             }
 
-          
-            InteractionManager.Instance.StartInteraction();
+            if (m_CurrentInteraction != null)
+            {
+                m_CurrentInteraction.StartInteract();
+                m_CurrentInteraction = null;
+            }
         }
 
         private bool IsCurrentMouseAndKeyBoard
@@ -355,10 +364,14 @@ namespace TPSHorror.PlayerControllerCharacter
             if (!m_IsCrouched)
             {
                 m_CameraTarget = m_CameraTargetStand;
+                m_CharacterMovement.CharacterController.height = m_heightStand;
+                m_CharacterMovement.CharacterController.center = new Vector3(0, m_heightStand / 2, 0);
             }
             else
             {
                 m_CameraTarget = m_CameraTargetCrouched;
+                m_CharacterMovement.CharacterController.height = m_heightCrouched;
+                m_CharacterMovement.CharacterController.center = new Vector3(0, m_heightCrouched / 2, 0);
             }
             m_ThirdPerson.m_Follow = m_CameraTarget.transform;
         }
@@ -409,6 +422,7 @@ namespace TPSHorror.PlayerControllerCharacter
             if(hitColliders == null || hitColliders.Length <= 0)
             {
                 InteractionManager.Instance.CloseUIInteract();
+                m_CurrentInteraction = null;
             }
             else
             {
@@ -416,11 +430,12 @@ namespace TPSHorror.PlayerControllerCharacter
                 if (interactAble != null)
                 {
                     RaycastHit hit;
-                    if (Physics.Raycast(m_CameraTarget.transform.position, m_CameraTarget.transform.forward, out hit,m_MaxLegnthFindInteraction, m_InteractionLayerMask))
+                    if (Physics.Raycast(m_CameraTarget.transform.position, m_ThirdPerson.transform.forward, out hit,m_MaxLegnthFindInteraction, m_InteractionLayerMask))
                     {
                         IInteractAble hitInteractAble = hit.collider.GetComponent<IInteractAble>();
                         if(hitInteractAble != null && interactAble == hitInteractAble)
                         {
+                            m_CurrentInteraction = hitInteractAble;
                             var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
                             //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
                             InteractionManager.Instance.ShowUIInteract(hitInteractAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
@@ -428,16 +443,19 @@ namespace TPSHorror.PlayerControllerCharacter
                         else
                         {
                             InteractionManager.Instance.CloseUIInteract();
+                            m_CurrentInteraction = null;
                         }
                     }
                     else
                     {
                         InteractionManager.Instance.CloseUIInteract();
+                        m_CurrentInteraction = null;
                     }
                 }
                 else
                 {
                     InteractionManager.Instance.CloseUIInteract();
+                    m_CurrentInteraction = null;
                 }
             }
         }
