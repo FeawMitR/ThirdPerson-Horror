@@ -51,8 +51,7 @@ namespace TPSHorror
         [Header("Perception Sensor FieldOfView Hunting", order = 1)]
         [SerializeField]
         private float m_FindHuntingRadius = 10.0f;
-        [SerializeField]
-        private float m_HuntingMaxRadius = 15.0f;
+  
         [SerializeField]
         private float m_HuntingDangerRadius = 2.0f;
 
