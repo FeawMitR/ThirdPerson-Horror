@@ -108,10 +108,10 @@ namespace TPSHorror.PlayerControllerCharacter
 
         private void Update()
         {
-            if (!m_IsOperating)
-            {
-                return;
-            }
+            //if (!m_IsOperating)
+            //{
+            //    return;
+            //}
 
             UpdateMovementDirection();
            
@@ -301,9 +301,21 @@ namespace TPSHorror.PlayerControllerCharacter
 
             if (m_CurrentInteraction != null)
             {
+                if (!m_CurrentInteraction.CanInteraction(this))
+                {
+                    return;
+                }
+
+                m_CurrentInteraction.OnFinishedInteract += OnFinishedInteract;
                 m_CurrentInteraction.StartInteract();
                 m_CurrentInteraction = null;
+                UIInteractionManager.Instance.CloseUIInteract();
             }
+        }
+
+        private void OnFinishedInteract(object sender, IInteractAble e)
+        {
+            e.OnFinishedInteract -= OnFinishedInteract;
         }
 
         private bool IsCurrentMouseAndKeyBoard
@@ -429,55 +441,41 @@ namespace TPSHorror.PlayerControllerCharacter
         {
             m_InteractionLayerMask = ~(1 << m_InteractionIgnoreLayer);
             m_InteractionAbleLayerMask = 1 << m_InteractionAbleLayer;
-            //m_InteractionLayerMask = 1 << 7;
         }
 
 
         private void FindObjectToInteraction()
         {
             Collider[] hitColliders = Physics.OverlapSphere(m_CameraTarget.transform.position , m_RadiusFindInteraction, m_InteractionLayerMask);
-            if(hitColliders == null || hitColliders.Length <= 0)
-            {
-                InteractionManager.Instance.CloseUIInteract();
-                m_CurrentInteraction = null;
-            }
-            else
+         
+            if(hitColliders != null && hitColliders.Length > 0)
             {
                 IInteractAble interactAble = GetInteractAbleInArray(hitColliders);
                 if (interactAble != null)
                 {
                     //Debug.LogError($"interactAble {interactAble}");
-    
                     if (Physics.Raycast(m_CameraTarget.transform.position, m_CameraTarget.transform.forward, out RaycastHit hit, m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
                     {
                         //Debug.LogError($"interactAble C {hit.collider}");
                         IInteractAble hitInteractAble = hit.collider.GetComponent<IInteractAble>();
-                        if(hitInteractAble != null && interactAble == hitInteractAble)
+                        if (hitInteractAble != null && interactAble == hitInteractAble)
                         {
-                            //Debug.LogError($"Found {hit.collider}");
-                            m_CurrentInteraction = hitInteractAble;
-                            var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
-                            //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
-                            InteractionManager.Instance.ShowUIInteract(hitInteractAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
-                        }
-                        else
-                        {
-                            InteractionManager.Instance.CloseUIInteract();
-                            m_CurrentInteraction = null;
+                            if (hitInteractAble.CanInteraction(this))
+                            {
+                                //Debug.LogError($"Found {hit.collider}");
+                                m_CurrentInteraction = hitInteractAble;
+                                var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
+                                //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
+                                UIInteractionManager.Instance.ShowUIInteract(hitInteractAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
+                                return;
+                            }
                         }
                     }
-                    else
-                    {
-                        InteractionManager.Instance.CloseUIInteract();
-                        m_CurrentInteraction = null;
-                    }
-                }
-                else
-                {
-                    InteractionManager.Instance.CloseUIInteract();
-                    m_CurrentInteraction = null;
                 }
             }
+
+            UIInteractionManager.Instance.CloseUIInteract();
+            m_CurrentInteraction = null;
         }
 
         private IInteractAble GetInteractAbleInArray(Collider[] hitColliders)

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TPSHorror
+namespace TPSHorror.Enemy
 {
     public class PatrolGroup : MonoBehaviour
     {

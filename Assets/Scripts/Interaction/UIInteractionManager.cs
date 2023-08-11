@@ -5,10 +5,10 @@ using TPSHorror.UserInterface;
 
 namespace TPSHorror.Interaction
 {
-    public class InteractionManager : MonoBehaviour
+    public class UIInteractionManager : MonoBehaviour
     {
-        private static InteractionManager m_Instance = null;
-        public static InteractionManager Instance
+        private static UIInteractionManager m_Instance = null;
+        public static UIInteractionManager Instance
         {
             get
             {

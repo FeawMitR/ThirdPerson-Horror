@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using TPSHorror.PerceptionSystem;
 
-namespace TPSHorror
+namespace TPSHorror.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent))]
   
@@ -32,6 +32,13 @@ namespace TPSHorror
         [Header("Patrol")]
         [SerializeField]
         private PatrolGroup m_GroupPatrol = null;
+        public PatrolGroup GroupPatrol
+        {
+            set
+            {
+                m_GroupPatrol = value;
+            }
+        }
         [SerializeField]
         private int m_CurrentPatrolIndex = 0;
         [SerializeField]
@@ -82,6 +89,17 @@ namespace TPSHorror
         public void StopOperation()
         {
             m_IsOperating = false;
+
+            switch (m_EnemyState)
+            {
+                case EnemyState.Patrolling:
+                    StopPatrolState();
+                    break;
+
+                case EnemyState.Hunting:
+                    StopHuntingState();
+                    break;
+            }
             StopAllCoroutines();
         }
 

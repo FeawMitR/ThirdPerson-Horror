@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TPSHorror.Interaction;
 using System;
+using TPSHorror.PlayerControllerCharacter;
 
 namespace TPSHorror
 {
@@ -36,6 +37,11 @@ namespace TPSHorror
             OnFinishedInteract?.Invoke(this,this);
             Debug.Log($"Finished Interact {this.gameObject.name}");
             Destroy(this.gameObject);
+        }
+
+        public bool CanInteraction(PlayerController playerController)
+        {
+           return true;
         }
     }
 }

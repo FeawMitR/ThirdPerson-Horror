@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using TPSHorror.PlayerControllerCharacter;
 
 namespace TPSHorror.Interaction
 {
@@ -9,8 +10,13 @@ namespace TPSHorror.Interaction
         
         Vector3 Pos{get;}
 
+    
+
         void StartInteract();
         void FinishedInteract();
+
+        bool CanInteraction(PlayerController playerController);
+
         event EventHandler<IInteractAble> OnStartInteract;
         event EventHandler<IInteractAble> OnFinishedInteract;
     }
