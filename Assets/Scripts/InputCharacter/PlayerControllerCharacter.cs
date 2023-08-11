@@ -5,12 +5,14 @@ using TPSHorror.Character;
 using TPSHorror.Interaction;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TPSHorror.PerceptionSystem;
 
 namespace TPSHorror.PlayerControllerCharacter
 {
     [RequireComponent(typeof(CharacterMovement))]
     [RequireComponent(typeof(AnimaionCharacter))]
     [RequireComponent(typeof(PlayerInput))]
+    [RequireComponent(typeof(PerceptionFieldOfViewSign))]
     public class PlayerControllerCharacter : MonoBehaviour
     {
         private bool m_IsOperating = false;
@@ -87,6 +89,10 @@ namespace TPSHorror.PlayerControllerCharacter
         private LayerMask m_InteractionLayerMask;
         private IInteractAble m_CurrentInteraction = null;
 
+        [Header("Perception FieldOfView Sign")]
+        [SerializeField]
+        private PerceptionFieldOfViewSign m_PerceptionFieldOfViewSign = null;
+
         private void Awake()
         {
             Initialized();
@@ -153,10 +159,10 @@ namespace TPSHorror.PlayerControllerCharacter
             InitializeCharacterMovement();
             InitializeInputAction();
             InitializeInteractionCheck();
+            InitializPerseptionFieldOfViewSign();
 
             m_AnimaionCharacter = this.GetComponent<AnimaionCharacter>();
-            onCrouchedHandler?.Invoke(false);
-
+            m_CameraTarget = m_CameraTargetStand;
         }
 
         private void UnInitialized()
@@ -191,22 +197,26 @@ namespace TPSHorror.PlayerControllerCharacter
 
         private void UnInitializeInputAction()
         {
-            StopOperation();
+            if(m_InputAction != null)
+            {
+                m_InputAction.PlayerMap.Movement.performed -= OnMovementInput;
+                m_InputAction.PlayerMap.Movement.canceled -= OnMovementInput;
 
-            m_InputAction.PlayerMap.Movement.performed -= OnMovementInput;
-            m_InputAction.PlayerMap.Movement.canceled -= OnMovementInput;
+                m_InputAction.PlayerMap.Look.performed -= OnLookInput;
+                m_InputAction.PlayerMap.Look.canceled -= OnLookInput;
 
-            m_InputAction.PlayerMap.Look.performed -= OnLookInput;
-            m_InputAction.PlayerMap.Look.canceled -= OnLookInput;
+                m_InputAction.PlayerMap.Run.performed -= OnRunInput;
+                m_InputAction.PlayerMap.Run.started -= OnRunInput;
+                m_InputAction.PlayerMap.Run.canceled -= OnRunInput;
 
-            m_InputAction.PlayerMap.Run.performed -= OnRunInput;
-            m_InputAction.PlayerMap.Run.started -= OnRunInput;
-            m_InputAction.PlayerMap.Run.canceled -= OnRunInput;
+                m_InputAction.PlayerMap.Crouched.started -= OnCrouchedInput;
 
-            m_InputAction.PlayerMap.Crouched.started -= OnCrouchedInput;
+
+                m_InputAction.PlayerMap.Interaction.started -= OnInteractionInput;
+            }
+        
+
             onCrouchedHandler -= OnCrouched;
-
-            m_InputAction.PlayerMap.Interaction.started -= OnInteractionInput;
         }
 
      
@@ -366,12 +376,16 @@ namespace TPSHorror.PlayerControllerCharacter
                 m_CameraTarget = m_CameraTargetStand;
                 m_CharacterMovement.CharacterController.height = m_heightStand;
                 m_CharacterMovement.CharacterController.center = new Vector3(0, m_heightStand / 2, 0);
+
+                ChangePerseptionFieldOfViewSign(m_CameraTargetStand.transform);
             }
             else
             {
                 m_CameraTarget = m_CameraTargetCrouched;
                 m_CharacterMovement.CharacterController.height = m_heightCrouched;
                 m_CharacterMovement.CharacterController.center = new Vector3(0, m_heightCrouched / 2, 0);
+
+                ChangePerseptionFieldOfViewSign(m_CameraTargetCrouched.transform);
             }
             m_ThirdPerson.m_Follow = m_CameraTarget.transform;
         }
@@ -474,8 +488,19 @@ namespace TPSHorror.PlayerControllerCharacter
             return null;
         }
 
-     
-      
+
+        #region Perseption FieldOfView Sign
+        private void InitializPerseptionFieldOfViewSign()
+        {
+            m_PerceptionFieldOfViewSign = this.GetComponent<PerceptionFieldOfViewSign>();
+            m_PerceptionFieldOfViewSign.SignTransform = m_CameraTargetStand.transform;
+        }
+
+        private void ChangePerseptionFieldOfViewSign(Transform signTransform) 
+        {
+            m_PerceptionFieldOfViewSign.SignTransform = signTransform;
+        }
+        #endregion Perseption FieldOfView Sign
 
         private void OnDrawGizmos()
         {

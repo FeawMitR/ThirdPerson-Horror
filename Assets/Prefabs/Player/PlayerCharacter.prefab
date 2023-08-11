@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 8268195360941172411}
   - component: {fileID: 8268195360941172410}
   - component: {fileID: 8268195360941172408}
+  - component: {fileID: 2102231663895245189}
   m_Layer: 6
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -126,6 +127,7 @@ MonoBehaviour:
   m_BottomClamp: -30
   m_RadiusFindInteraction: 2
   m_MaxLegnthFindInteraction: 5
+  m_PerceptionFieldOfViewSign: {fileID: 0}
 --- !u!114 &8268195360941172410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,6 +172,18 @@ MonoBehaviour:
   m_DefaultActionMap: PlayerMap
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2102231663895245189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8268195360941172415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38f46932047eef54f80129df4f4f8f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8268195361902153282
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,7 +235,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 3a4fd37db95e1c34b9f24e235ce52298,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.085
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3a4fd37db95e1c34b9f24e235ce52298,
         type: 3}
