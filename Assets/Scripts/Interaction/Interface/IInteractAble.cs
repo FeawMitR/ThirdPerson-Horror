@@ -17,7 +17,6 @@ namespace TPSHorror.Interaction
 
         bool CanInteraction(PlayerController playerController);
 
-        event EventHandler<IInteractAble> OnStartInteract;
         event EventHandler<IInteractAble> OnFinishedInteract;
     }
 }

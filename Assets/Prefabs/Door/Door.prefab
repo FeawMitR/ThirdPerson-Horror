@@ -162,6 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UIOffset: {x: 0, y: 0, z: 0}
   m_Knob: {fileID: 4114342860344638801}
+  m_IsOperating: 0
   m_Speed: 0.15
   m_StartRotation: 0
   m_EndRotation: 90
@@ -200,7 +201,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 3, z: 1}
+  m_Size: {x: 2, y: 3, z: 0.42}
   m_Center: {x: -1, y: 0, z: 0}
 --- !u!1 &4114342860344638802
 GameObject:
@@ -263,7 +264,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 99ed5f50825cafe45b0e7e1893fd7f63, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

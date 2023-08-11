@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using TPSHorror.Interaction;
 using TPSHorror.PlayerControllerCharacter;
 using UnityEngine;
 
-namespace TPSHorror
+namespace TPSHorror.Interaction
 {
     public class Door : MonoBehaviour, IInteractAble
     {
@@ -15,6 +13,8 @@ namespace TPSHorror
         [SerializeField]
         private Transform m_Knob = null;
 
+        [SerializeField]
+        private bool m_IsOperating = false;
         private bool m_IsOpen = false;
         private bool m_IsInteracting = false;
 
@@ -32,10 +32,17 @@ namespace TPSHorror
         public Vector3 UiOffset => m_UIOffset;
         public Vector3 Pos => m_Knob.position + UiOffset;
 
-        public event EventHandler<IInteractAble> OnStartInteract;
         public event EventHandler<IInteractAble> OnFinishedInteract;
 
+        public void StartOperating()
+        {
+            m_IsOperating = true;
+        }
 
+        public void StopOperating()
+        {
+            m_IsOperating = false;
+        }
 
  
 
@@ -56,7 +63,7 @@ namespace TPSHorror
 
         private IEnumerator OpenDoor()
         {
-            Quaternion finalRotation = Quaternion.Euler(0, m_EndRotation, 0);
+            Quaternion finalRotation = Quaternion.Euler(0, this.transform.rotation.eulerAngles.y + m_EndRotation, 0);
             float time = 0.0f;
 
             while(time < 1)
@@ -74,7 +81,7 @@ namespace TPSHorror
 
         private IEnumerator CloseDoor()
         {
-            Quaternion finalRotation = Quaternion.Euler(0, m_StartRotation, 0);
+            Quaternion finalRotation = Quaternion.Euler(0, this.transform.rotation.eulerAngles.y - m_EndRotation, 0);
             float time = 0.0f;
 
             while (time <1)
@@ -97,13 +104,13 @@ namespace TPSHorror
             m_IsOpen = !m_IsOpen;
             m_IsInteracting = false;
 
-            Debug.LogError($"FinishedInteract()");
+            //Debug.LogError($"FinishedInteract()");
             OnFinishedInteract?.Invoke(this,this);
         }
 
         public bool CanInteraction(PlayerController playerController)
         {
-           return !m_IsInteracting;
+           return !m_IsInteracting && m_IsOperating;
         }
     }
 }

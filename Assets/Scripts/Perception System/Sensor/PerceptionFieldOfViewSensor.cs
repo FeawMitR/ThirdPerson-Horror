@@ -95,13 +95,13 @@ namespace TPSHorror.PerceptionSystem
                 if (sign)
                 {
                     Transform target = sign.SignTransform;
-                    Vector3 directionToTarget = (target.position - transform.position).normalized;
+                    Vector3 direction = (target.position - transform.position).normalized;
 
                     float distance = Vector3.Distance(transform.position, target.position);
 
                     if(distance <= m_ViewNearRadius && !m_IsIgnorViewNearRadius)
                     {
-                        if (!IsObstacleBlock(directionToTarget, distance))
+                        if (!IsObstacleBlock(direction, distance))
                         {
 #if UNITY_EDITOR
                             m_VisibleTarget.Add(target);
@@ -111,10 +111,10 @@ namespace TPSHorror.PerceptionSystem
                     }
                     else
                     {
-                        Vector3 newDirection = new Vector3(directionToTarget.x,0, directionToTarget.z);
+                        Vector3 newDirection = new Vector3(direction.x,0, direction.z);
                         if (Vector3.Angle(transform.forward, newDirection) < m_ViewAngle / 2)
                         {
-                            if (!IsObstacleBlock(directionToTarget, distance))
+                            if (!IsObstacleBlock(direction, distance))
                             {
 #if UNITY_EDITOR
                                 m_VisibleTarget.Add(target);

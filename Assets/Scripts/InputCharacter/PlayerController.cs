@@ -453,24 +453,10 @@ namespace TPSHorror.PlayerControllerCharacter
                 IInteractAble interactAble = GetInteractAbleInArray(hitColliders);
                 if (interactAble != null)
                 {
-                    //Debug.LogError($"interactAble {interactAble}");
-                    if (Physics.Raycast(m_CameraTarget.transform.position, m_CameraTarget.transform.forward, out RaycastHit hit, m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
-                    {
-                        //Debug.LogError($"interactAble C {hit.collider}");
-                        IInteractAble hitInteractAble = hit.collider.GetComponent<IInteractAble>();
-                        if (hitInteractAble != null && interactAble == hitInteractAble)
-                        {
-                            if (hitInteractAble.CanInteraction(this))
-                            {
-                                //Debug.LogError($"Found {hit.collider}");
-                                m_CurrentInteraction = hitInteractAble;
-                                var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
-                                //Debug.LogError($"{m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)}");
-                                UIInteractionManager.Instance.ShowUIInteract(hitInteractAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
-                                return;
-                            }
-                        }
-                    }
+                    m_CurrentInteraction = interactAble;
+                    var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
+                    UIInteractionManager.Instance.ShowUIInteract(interactAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
+                    return;
                 }
             }
 
@@ -485,7 +471,15 @@ namespace TPSHorror.PlayerControllerCharacter
                 IInteractAble inputInteraction = hitColliders[i].gameObject.GetComponent<IInteractAble>();
                 if (inputInteraction != null)
                 {
-                    return inputInteraction;
+                    //Debug.LogError($"Overlap Look Found {hitColliders[i].name}");
+                    if (Physics.Raycast(m_CameraTarget.transform.position, m_CameraTarget.transform.forward, out RaycastHit hit, m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
+                    {
+                        if(hit.collider == hitColliders[i] && inputInteraction.CanInteraction(this))
+                        {
+                            //Debug.LogError($"Ray Look Found {hit.collider.name}");
+                            return inputInteraction;
+                        }
+                    }
                 }
             }
 

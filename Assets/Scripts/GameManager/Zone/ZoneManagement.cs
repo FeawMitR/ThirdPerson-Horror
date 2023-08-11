@@ -15,9 +15,12 @@ namespace TPSHorror.GameManager.Zone
         }
 
         [SerializeField]
-        private EnemyInfo[] m_Enemies;
-     
-        public void StartZone()
+        protected EnemyInfo[] m_Enemies;
+
+        protected bool m_IsFinished = false;
+        public System.Action onZoneFinishedEvent;
+       
+        public virtual void StartZone()
         {
             for (int i = 0; i < m_Enemies.Length; i++)
             {
@@ -29,7 +32,7 @@ namespace TPSHorror.GameManager.Zone
             }
         }
 
-        public void StopZone()
+        public virtual void StopZone()
         {
             for (int i = 0; i < m_Enemies.Length; i++)
             {
