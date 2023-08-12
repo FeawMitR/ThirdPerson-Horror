@@ -212,6 +212,7 @@ MonoBehaviour:
   m_FindNotHuntingDangerRadius: 4.5
   m_FindHuntingRadius: 10
   m_HuntingDangerRadius: 2
+  m_RoarSFX: {fileID: 8300000, guid: dde3449ed9d86ec4892c8491f2582b44, type: 3}
 --- !u!1 &6844245141278682735
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using TPSHorror.PerceptionSystem;
+using TPSHorror.Audio;
 
 namespace TPSHorror.Enemy
 {
@@ -61,6 +61,11 @@ namespace TPSHorror.Enemy
   
         [SerializeField]
         private float m_HuntingDangerRadius = 2.0f;
+
+        [Header("Audio")]
+        [SerializeField]
+        private AudioClip m_RoarSFX = null;
+
 
         private void Awake()
         {
@@ -230,6 +235,7 @@ namespace TPSHorror.Enemy
 
         private void StartHuntingState()
         {
+            AudioManager.Instance.PlayAtWorldPosition(m_RoarSFX, false, this.transform.position, 0.5f);
             //Debug.Log($"StartHuntingState");
             m_EnemyState = EnemyState.Hunting;
             m_Agent.speed = m_RunSpeed;
