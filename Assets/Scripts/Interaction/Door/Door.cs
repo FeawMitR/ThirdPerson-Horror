@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TPSHorror.Audio;
 using TPSHorror.PlayerControllerCharacter;
 using UnityEngine;
 
@@ -27,6 +28,8 @@ namespace TPSHorror.Interaction
         [SerializeField]
         private AnimationCurve m_Rotationcurve;
 
+        [SerializeField]
+        private AudioClip m_DoorSFX = null;
 
         //------ IInteractAble -----
         public Vector3 UiOffset => m_UIOffset;
@@ -58,6 +61,7 @@ namespace TPSHorror.Interaction
         {
             m_IsInteracting = true;
 
+            AudioManager.Instance.PlayAtWorldPosition(m_DoorSFX, false, this.transform.position, 0.5f);
             StopAllCoroutines();
             if (!m_IsOpen)
             {

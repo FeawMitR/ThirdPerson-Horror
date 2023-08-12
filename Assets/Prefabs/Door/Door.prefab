@@ -190,6 +190,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  m_DoorSFX: {fileID: 8300000, guid: be854cacae9273b4ab9b187a0e3fcc30, type: 3}
   m_TextCanInteractAble: Interact
   m_TextCannotInteractAble: Can't
 --- !u!65 &4114342860138249243

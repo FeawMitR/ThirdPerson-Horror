@@ -133,7 +133,7 @@ namespace TPSHorror.Enemy
 
         private void StartPatrolState()
         {
-            Debug.Log($"StartPatrolState");
+            //Debug.Log($"StartPatrolState");
             m_EnemyState = EnemyState.Patrolling;
             m_Agent.speed = m_WalkSpeed;
             m_Agent.acceleration = m_WalkSpeed * 2;
@@ -147,7 +147,7 @@ namespace TPSHorror.Enemy
 
         private void StopPatrolState()
         {
-            Debug.Log($"StopPatrolState");
+            //Debug.Log($"StopPatrolState");
             m_Agent.SetDestination(this.transform.position);
         }
 
@@ -230,7 +230,7 @@ namespace TPSHorror.Enemy
 
         private void StartHuntingState()
         {
-            Debug.Log($"StartHuntingState");
+            //Debug.Log($"StartHuntingState");
             m_EnemyState = EnemyState.Hunting;
             m_Agent.speed = m_RunSpeed;
             m_Agent.acceleration = m_RunSpeed * 2;
@@ -243,7 +243,7 @@ namespace TPSHorror.Enemy
 
         private void StopHuntingState()
         {
-            Debug.Log($"StopHuntingState");
+            //Debug.Log($"StopHuntingState");
             m_TargetHunting = null;
             m_Agent.SetDestination(this.transform.position);
         }

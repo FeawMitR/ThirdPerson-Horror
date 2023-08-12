@@ -78,11 +78,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UIOffset: {x: 0, y: 0.5, z: 0}
   m_TextCanInteractAble: Push
-  m_TextCannotInteractAble: 
   m_LayerMaskPlayer:
     serializedVersion: 2
     m_Bits: 128
   m_Rigid: {fileID: 8982882288660517055}
+  m_PushSFX: {fileID: 8300000, guid: d87cb7c71b8f2cb42b3094b901594b00, type: 3}
 --- !u!1 &8982882289604928138
 GameObject:
   m_ObjectHideFlags: 0

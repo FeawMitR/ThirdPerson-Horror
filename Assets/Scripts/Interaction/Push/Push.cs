@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TPSHorror.Audio;
 using TPSHorror.PlayerControllerCharacter;
 using UnityEngine;
 
@@ -31,6 +32,9 @@ namespace TPSHorror.Interaction
         private Rigidbody m_Rigid = null;
         private PlayerController m_Player = null;
 
+        [SerializeField]
+        private AudioClip m_PushSFX = null;
+
         public bool CanInteraction(PlayerController playerController)
         {
             m_Player = playerController;
@@ -55,7 +59,7 @@ namespace TPSHorror.Interaction
                     //Debug.DrawLine(start, start + direction * distance,Color.red,5.0f);
 
                     //Debug.DrawLine(target, target + direction * distance, Color.green, 5.0f);
-
+                    AudioManager.Instance.PlayAtWorldPosition(m_PushSFX, false, this.transform.position, 0.5f);
                     m_Rigid.AddForce(direction * 20.0f,ForceMode.Impulse);
                 }
             }

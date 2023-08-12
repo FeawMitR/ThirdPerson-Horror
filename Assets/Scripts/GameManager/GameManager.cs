@@ -5,6 +5,7 @@ using TPSHorror.GameManager.Zone;
 using TPSHorror.Interaction;
 using TPSHorror.FinishedGame;
 using UnityEngine.SceneManagement;
+using TPSHorror.Audio;
 
 namespace TPSHorror.GameManager
 {
@@ -47,7 +48,14 @@ namespace TPSHorror.GameManager
         [SerializeField]
         private PlayerController m_player = null;
 
-        //[Header("")]
+        [Header("Audio")]
+        [SerializeField]
+        private AudioClip m_StartGameVoice = null;
+
+        [SerializeField]
+        private AudioClip m_EndGameWin = null;
+        [SerializeField]
+        private AudioClip m_EndGameOver = null;
 
         // Start is called before the first frame update
         void Start()
@@ -76,6 +84,7 @@ namespace TPSHorror.GameManager
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
+            AudioManager.Instance.PlayAtWorldPosition(m_StartGameVoice,false,m_player.transform.position);
             StartMainZone();
         }
 
@@ -145,6 +154,8 @@ namespace TPSHorror.GameManager
                 m_FinishedGame = FishedGameType.Win;
                 Debug.Log($"FinishedGameWin");
                 FishedGame();
+
+                AudioManager.Instance.PlayAtWorldPosition(m_EndGameWin, false, m_player.transform.position);
             }
         }
 
@@ -157,6 +168,8 @@ namespace TPSHorror.GameManager
                 m_FinishedGame = FishedGameType.GameOver;
                 Debug.Log($"FinishedOver");
                 FishedGame();
+
+                AudioManager.Instance.PlayAtWorldPosition(m_EndGameOver, false, m_player.transform.position);
             }
         }
 

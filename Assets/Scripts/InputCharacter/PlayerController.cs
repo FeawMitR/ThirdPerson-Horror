@@ -5,6 +5,7 @@ using TPSHorror.Interaction;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TPSHorror.PerceptionSystem;
+using TPSHorror.Audio;
 
 namespace TPSHorror.PlayerControllerCharacter
 {
@@ -86,11 +87,17 @@ namespace TPSHorror.PlayerControllerCharacter
         private float m_MaxLegnthFindInteraction = 3.0f;
         private int m_InteractionIgnoreLayer = 6;
         private int m_InteractionAbleLayer = 7;
-        //[SerializeField]
         private LayerMask m_InteractionLayerMask;
-        //[SerializeField]
         private LayerMask m_InteractionAbleLayerMask;
         private IInteractAble m_CurrentInteraction = null;
+
+
+        [Header("Audio")]
+        [SerializeField]
+        private AudioClip[] m_FootStepSFX = null;
+        [SerializeField]
+        private float m_DesiredSpeed = 1.5f;
+        private float m_TimeFootStep = 0;
 
         [Header("Perception FieldOfView Sign")]
         [SerializeField]
@@ -116,8 +123,7 @@ namespace TPSHorror.PlayerControllerCharacter
             //    return;
             //}
 
-            UpdateMovementDirection();
-           
+            UpdateMovementDirection();  
         }
 
         private void LateUpdate()
@@ -242,7 +248,7 @@ namespace TPSHorror.PlayerControllerCharacter
                 {
                     m_IsRunning = false;
                 }
-            }
+            }       
         }
 
         private void OnLookInput(InputAction.CallbackContext context)
@@ -368,6 +374,30 @@ namespace TPSHorror.PlayerControllerCharacter
 
             m_CharacterMovement.Move(targetDirection.normalized *(m_TargetSpeed * Time.deltaTime));
             m_AnimaionCharacter.UpdateSpeedMovementAnimation(m_AnimationSpeedBlend);
+            PlayAudioFootStep();
+        }
+
+        private void PlayAudioFootStep()
+        {
+            if (m_InputDirection == Vector2.zero)
+            {
+                StopAudioFootStep();
+                return;
+            }
+
+            m_TimeFootStep += Time.deltaTime * m_TargetSpeed / m_DesiredSpeed;
+            if(m_TimeFootStep >= 1f)
+            {
+                m_TimeFootStep = m_TimeFootStep % 1.0f;
+
+                AudioClip audio = m_FootStepSFX[Random.Range(0, m_FootStepSFX.Length)];
+                AudioManager.Instance.PlayAtWorldPosition(audio,false,this.transform.position,0.5f);
+            }
+        }
+
+        private void StopAudioFootStep()
+        {
+            m_TimeFootStep = 0;
         }
 
         private float GetTargetSpeed
@@ -412,7 +442,6 @@ namespace TPSHorror.PlayerControllerCharacter
             }
             m_ThirdPerson.m_Follow = m_CameraTarget.transform;
         }
-
 
         private void UpdateCameraLook()
         {

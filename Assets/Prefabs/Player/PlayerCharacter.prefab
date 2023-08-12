@@ -127,12 +127,7 @@ MonoBehaviour:
   m_BottomClamp: -30
   m_RadiusFindInteraction: 2
   m_MaxLegnthFindInteraction: 5
-  m_InteractionLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_InteractionAbleLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
+  m_WalkSFX: {fileID: 8300000, guid: 0511188784a78844b8ad594b1c47ed30, type: 3}
   m_PerceptionFieldOfViewSign: {fileID: 2102231663895245189}
 --- !u!114 &8268195360941172410
 MonoBehaviour:

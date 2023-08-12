@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TPSHorror.Item;
 using TPSHorror.Interaction;
+using TPSHorror.CutScene;
 
 namespace TPSHorror.GameManager.Zone
 {
@@ -10,6 +11,9 @@ namespace TPSHorror.GameManager.Zone
     {
         [SerializeField]
         private KeyItem m_KeyYellowRoom = null;
+
+        [SerializeField]
+        private EventCutScene m_CutsceneKeyYellowRoom = null;
 
 
         public override void StartZone()
@@ -24,6 +28,8 @@ namespace TPSHorror.GameManager.Zone
         {
             e.OnFinishedInteract -= OnFinishedCollectInteract;
             onZoneFinishedEvent.Invoke();
+
+            m_CutsceneKeyYellowRoom.StartCutscene();
         }
     }
 }
