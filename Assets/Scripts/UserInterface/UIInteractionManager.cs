@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using TPSHorror.Interaction;
 using UnityEngine;
-using TPSHorror.UserInterface;
 
-namespace TPSHorror.Interaction
+namespace TPSHorror.UserInterface
 {
     public class UIInteractionManager : MonoBehaviour
     {
-        private static UIInteractionManager m_Instance = null;
+        private static UIInteractionManager instance = null;
         public static UIInteractionManager Instance
         {
             get
             {
-                return m_Instance;
+                return instance;
             }
         }
 
@@ -30,11 +28,11 @@ namespace TPSHorror.Interaction
             }
         }
 
-        private void OnEnable()
+        private void Awake()
         {
-            if (m_Instance == null)
+            if (instance == null)
             {
-                m_Instance = this;
+                instance = this;
                 DontDestroyOnLoad(this.gameObject);
 
                 Initialized();
@@ -58,6 +56,7 @@ namespace TPSHorror.Interaction
 
         private void UnInitialized()
         {
+            Destroy(m_UiInteraction.gameObject);
             Destroy(this.gameObject);
         }
 
@@ -79,17 +78,5 @@ namespace TPSHorror.Interaction
             m_UiInteraction.Hide();
         }
 
-        //private void OnCurrentInteractStart(object sender, IInteractAble e)
-        //{
-        //    Debug.Log($"Interaction : {sender}[{e}] start");
-        //    e.OnStartInteract -= OnCurrentInteractStart;
-        //}
-
-        //public void OnCurrentInteractionFinished(object sender, IInteractAble e)
-        //{
-        //    Debug.Log($"Interaction : {sender}[{e}] Finished");
-        //    e.OnFinishedInteract -= OnCurrentInteractionFinished;
-        //    CloseUIInteract();
-        //}
     }
 }

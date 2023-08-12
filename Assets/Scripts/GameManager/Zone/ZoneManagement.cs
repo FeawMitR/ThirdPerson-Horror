@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TPSHorror.Enemy;
 
-namespace TPSHorror.GameManager.Zone
+namespace TPSHorror.CoreManager.Zone
 {
     public class ZoneManagement : MonoBehaviour
     {

@@ -1,16 +1,25 @@
 using UnityEngine;
 using TPSHorror.PlayerControllerCharacter;
 using TPSHorror.UserInterface;
-using TPSHorror.GameManager.Zone;
+using TPSHorror.CoreManager.Zone;
 using TPSHorror.Interaction;
 using TPSHorror.FinishedGame;
 using UnityEngine.SceneManagement;
 using TPSHorror.Audio;
 
-namespace TPSHorror.GameManager
+namespace TPSHorror.CoreManager
 {
     public class GameManager : MonoBehaviour
     {
+        public static GameManager instance = null;
+        public static GameManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
         private bool m_IsFinished = false;
         public enum FishedGameType : byte
         {
@@ -60,6 +69,15 @@ namespace TPSHorror.GameManager
         // Start is called before the first frame update
         void Start()
         {
+            if(instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+
             m_UIStartGame = Instantiate(m_UIStartGamePrefab,CanvasInstance.Instance.Canvas.transform);
 
             m_UIStartGame.ButtonStartGame.onClick.AddListener(GameStart);
@@ -77,12 +95,11 @@ namespace TPSHorror.GameManager
         public void GameStart()
         {
             m_UIStartGame.ButtonStartGame.onClick.RemoveListener(GameStart);
-            m_player.StartOperation();
+           
             m_player.onPlayerWasCaughtEvent += FinishedGameOver;
             m_UIStartGame.Hide();
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            ResumeGame();
 
             AudioManager.Instance.PlayAtWorldPosition(m_StartGameVoice,false,m_player.transform.position);
             StartMainZone();
@@ -176,10 +193,8 @@ namespace TPSHorror.GameManager
 
         private void FishedGame()
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            PauseGame();
 
-            m_player.StopOperation();
             m_UIEndGame.EndGameTypeText.text = $"{m_FinishedGame}";
             m_UIEndGame.ButtonReStartGame.onClick.AddListener(RestartGame);
 
@@ -192,6 +207,23 @@ namespace TPSHorror.GameManager
             m_UIEndGame.ButtonReStartGame.onClick.RemoveListener(RestartGame);
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+
+        public void PauseGame()
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            m_player.StopOperation();
+        }
+
+        public void ResumeGame()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            m_player.StartOperation();
         }
     }
 }

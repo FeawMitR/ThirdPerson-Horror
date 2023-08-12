@@ -5,7 +5,7 @@ using TPSHorror.Item;
 using TPSHorror.Interaction;
 using TPSHorror.CutScene;
 
-namespace TPSHorror.GameManager.Zone
+namespace TPSHorror.CoreManager.Zone
 {
     public class ZoneManagement_Main : ZoneManagement
     {

@@ -2,6 +2,7 @@ using Cinemachine;
 using TPSHorro.AnimaionCharacter;
 using TPSHorror.Character;
 using TPSHorror.Interaction;
+using TPSHorror.UserInterface;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TPSHorror.PerceptionSystem;

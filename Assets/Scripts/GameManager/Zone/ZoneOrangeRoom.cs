@@ -4,7 +4,7 @@ using UnityEngine;
 using TPSHorror.Interaction;
 using TPSHorror.Item;
 
-namespace TPSHorror.GameManager.Zone
+namespace TPSHorror.CoreManager.Zone
 {
     public class ZoneOrangeRoom : ZoneManagement
     {
