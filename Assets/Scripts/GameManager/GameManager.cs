@@ -3,14 +3,30 @@ using TPSHorror.PlayerControllerCharacter;
 using TPSHorror.UserInterface;
 using TPSHorror.GameManager.Zone;
 using TPSHorror.Interaction;
+using TPSHorror.FinishedGame;
+using UnityEngine.SceneManagement;
 
 namespace TPSHorror.GameManager
 {
     public class GameManager : MonoBehaviour
     {
+        private bool m_IsFinished = false;
+        public enum FishedGameType : byte
+        {
+            Win,GameOver
+        }
+
+        private FishedGameType m_FinishedGame = FishedGameType.Win;
+
         [Header("Ui Game Start")]
         [SerializeField]
+        private UIStartGame m_UIStartGamePrefab = null;
         private UIStartGame m_UIStartGame = null;
+
+        [Header("Ui End Game")]
+        [SerializeField]
+        private UIEndGame m_UIEndGamePrefab = null;
+        private UIEndGame m_UIEndGame = null;
 
         [Header("Zone")]
         [SerializeField]
@@ -21,10 +37,12 @@ namespace TPSHorror.GameManager
         [SerializeField]
         private ZoneManagement m_RoomOrange = null;
 
+        [SerializeField]
         private Door m_FinalDoor = null;
 
-        private int m_KeyItemCount = 0;
-        private int m_MaxKeyItem = 3;
+        [SerializeField]
+        private FinishedGamePoint m_FinishedPoint = null;
+
         [Header("Player")]
         [SerializeField]
         private PlayerController m_player = null;
@@ -34,15 +52,15 @@ namespace TPSHorror.GameManager
         // Start is called before the first frame update
         void Start()
         {
+            m_UIStartGame = Instantiate(m_UIStartGamePrefab,CanvasInstance.Instance.Canvas.transform);
+
             m_UIStartGame.ButtonStartGame.onClick.AddListener(GameStart);
             m_UIStartGame.Show();
+
+            m_UIEndGame = Instantiate(m_UIEndGamePrefab, CanvasInstance.Instance.Canvas.transform);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+
 
 
         public void GameStart()
@@ -88,7 +106,68 @@ namespace TPSHorror.GameManager
         private void StartRoomOrange()
         {
             m_RoomOrange.StartZone();
+            m_RoomOrange.onZoneFinishedEvent += OnRoomOrangeFinishedHadler;
             Debug.Log($"Start Room Orange");
+        }
+
+        private void OnRoomOrangeFinishedHadler()
+        {
+            m_RoomOrange.onZoneFinishedEvent -= OnRoomOrangeFinishedHadler;
+            Debug.Log($"Room Orange Finished");
+            m_FinalDoor.StartOperating();
+            ReadyFinishedGameWin();
+        }
+
+        private void ReadyFinishedGameWin()
+        {
+            m_FinishedPoint.StartOperation();
+            m_FinishedPoint.onPlayerTriggerEvent += OnPlayerTrigger ;
+        }
+
+        private void OnPlayerTrigger()
+        {
+            m_FinishedPoint.onPlayerTriggerEvent -= OnPlayerTrigger;
+            FinishedGameWin();
+        }
+
+        private void FinishedGameWin()
+        {
+            if (!m_IsFinished)
+            {
+                m_IsFinished = true;
+                m_FinishedGame = FishedGameType.Win;
+                Debug.Log($"FinishedGameWin");
+                FishedGame();
+            }
+        }
+
+        private void FinishedGameOver()
+        {
+            if (!m_IsFinished)
+            {
+                m_IsFinished = true;
+                m_FinishedGame = FishedGameType.GameOver;
+                Debug.Log($"FinishedOver");
+                FishedGame();
+            }
+        }
+
+
+        private void FishedGame()
+        {
+            m_player.StopOperation();
+            m_UIEndGame.EndGameTypeText.text = $"{m_FinishedGame}";
+            m_UIEndGame.ButtonReStartGame.onClick.AddListener(RestartGame);
+
+            m_UIEndGame.Show();
+        }
+
+        private void RestartGame()
+        {
+            m_UIEndGame.Hide();
+            m_UIEndGame.ButtonReStartGame.onClick.RemoveListener(RestartGame);
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

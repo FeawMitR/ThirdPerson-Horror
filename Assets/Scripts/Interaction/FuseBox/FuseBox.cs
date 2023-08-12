@@ -41,6 +41,9 @@ namespace TPSHorror.Interaction
  
         public string TextCannotInteractAble => TextCannotInteractAbleFuseType;
 
+        private bool m_IsFuseBoxHaveFuse = false;
+        public Action onFuseBoxHaveFuseEvent;
+
         private void Start()
         {
             m_CollectedFuse = new bool[m_Fuse.Length];
@@ -63,6 +66,7 @@ namespace TPSHorror.Interaction
                     m_Fuse[i].m_FuseItem.OnFinishedInteract += CollectFuse;
                 }
             }
+            m_IsFuseBoxHaveFuse = false;
         }
 
         private void CollectFuse(object sender, IInteractAble e)
@@ -93,6 +97,12 @@ namespace TPSHorror.Interaction
         public void FinishedInteract()
         {
             OnFinishedInteract?.Invoke(this, this);
+
+            if (IsFuseBoxHaveFuse && !m_IsFuseBoxHaveFuse)
+            {
+                m_IsFuseBoxHaveFuse = true;
+                onFuseBoxHaveFuseEvent?.Invoke();
+            }
         }
 
         public bool CanInteraction(PlayerController playerController)
@@ -154,6 +164,21 @@ namespace TPSHorror.Interaction
                 }
 
                 return string.Empty;
+            }
+        }
+
+        public bool IsFuseBoxHaveFuse
+        {
+            get
+            {
+                for (int i = 0; i < m_Fuse.Length; i++)
+                {
+                    if (!m_CollectedFuse[i] && !m_FilledFuse[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
     }

@@ -19,12 +19,12 @@ namespace TPSHorror.GameManager.Zone
             base.StartZone();
             m_DoorZoneOne.StartOperating();
 
-            m_KeyOrangeRoom.OnFinishedInteract += OnFinishedCollectInteract;
+            m_KeyOrangeRoom.OnFinishedInteract += OnFinishedCollectInteractKeyOrangeRoom;
         }
 
-        private void OnFinishedCollectInteract(object sender, IInteractAble e)
+        private void OnFinishedCollectInteractKeyOrangeRoom(object sender, IInteractAble e)
         {
-            e.OnFinishedInteract -= OnFinishedCollectInteract;
+            e.OnFinishedInteract -= OnFinishedCollectInteractKeyOrangeRoom;
             onZoneFinishedEvent.Invoke();
         }
     }
