@@ -10,12 +10,16 @@ namespace TPSHorror.Interaction
         
         Vector3 Pos{get;}
 
-    
+        string TextCanInteractAble { get; }
+        string TextCannotInteractAble { get; }
+
 
         void StartInteract();
         void FinishedInteract();
 
         bool CanInteraction(PlayerController playerController);
+
+
 
         event EventHandler<IInteractAble> OnFinishedInteract;
     }

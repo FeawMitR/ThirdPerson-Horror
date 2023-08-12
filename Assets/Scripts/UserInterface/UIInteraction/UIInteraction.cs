@@ -28,7 +28,7 @@ namespace TPSHorror.UserInterface
             Show();
             m_RectTransform.anchoredPosition = rectTranformPosition;
    
-            m_InteractText.text = string.Format("Press : {0}", keyName);
+            m_InteractText.text = keyName;
             if (key != keyName)
             {
                 key = keyName;

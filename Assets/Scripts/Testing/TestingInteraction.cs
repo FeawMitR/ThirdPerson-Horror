@@ -22,6 +22,10 @@ namespace TPSHorror
 
         public Vector3 Pos => UiOffset + this.transform.position;
 
+        public string TextCanInteractAble => $"Press : ";
+
+        public string TextCannotInteractAble => string.Empty;
+
         public event EventHandler<IInteractAble> OnStartInteract;
         public event EventHandler<IInteractAble> OnFinishedInteract;
 

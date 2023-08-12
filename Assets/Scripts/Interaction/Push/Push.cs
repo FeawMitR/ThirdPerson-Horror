@@ -11,10 +11,16 @@ namespace TPSHorror.Interaction
     {
         [SerializeField]
         private Vector3 m_UIOffset;
+        [SerializeField]
+        private string m_TextCanInteractAble;
 
         public Vector3 UiOffset => m_UIOffset;
 
         public Vector3 Pos => transform.position + UiOffset;
+
+        public string TextCanInteractAble => m_TextCanInteractAble;
+
+        public string TextCannotInteractAble => string.Empty;
 
         public event EventHandler<IInteractAble> OnFinishedInteract;
 

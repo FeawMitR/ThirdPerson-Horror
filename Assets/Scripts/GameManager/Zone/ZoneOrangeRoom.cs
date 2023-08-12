@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using TPSHorror.Interaction;
 using UnityEngine;
-
+using TPSHorror.Interaction;
 
 namespace TPSHorror.GameManager.Zone
 {
-    public class ZoneManagement_One : ZoneManagement
+    public class ZoneOrangeRoom : ZoneManagement
     {
+        //public struct
         [SerializeField]
-        private Door m_DoorZoneOne = null;
+        private Door m_Door_First = null;
+
 
         public override void StartZone()
         {
             base.StartZone();
-            m_DoorZoneOne.StartOperating();
+
+            m_Door_First.StartOperating();
         }
     }
 }

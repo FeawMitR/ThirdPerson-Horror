@@ -16,7 +16,10 @@ namespace TPSHorror.GameManager
         [SerializeField]
         private ZoneManagement m_MainZone = null;
         [SerializeField]
-        private ZoneManagement m_ZoneOne = null;
+        private ZoneManagement m_RoomYellow = null;
+
+        [SerializeField]
+        private ZoneManagement m_RoomOrange = null;
 
         private Door m_FinalDoor = null;
 
@@ -62,23 +65,30 @@ namespace TPSHorror.GameManager
         {
             m_MainZone.onZoneFinishedEvent -= OnMainZoneFinishedHadler;
             Debug.Log($"Collect First Key");
-            StartZoneOne();
+            StartRoomYellow();
         }
 
 
-        private void StartZoneOne()
+        private void StartRoomYellow()
         {
             //Start Zone One
-            Debug.Log($"Start Zone One");
-            m_ZoneOne.onZoneFinishedEvent += OnZoneOneFinishedHadler;
-            m_ZoneOne.StartZone();
+            Debug.Log($"Start Room Yellow");
+            m_RoomYellow.onZoneFinishedEvent += OnRoomYellowFinishedHadler;
+            m_RoomYellow.StartZone();
         }
 
-        private void OnZoneOneFinishedHadler()
+        private void OnRoomYellowFinishedHadler()
         {
-            m_MainZone.onZoneFinishedEvent -= OnZoneOneFinishedHadler;
+            m_RoomYellow.onZoneFinishedEvent -= OnRoomYellowFinishedHadler;
             Debug.Log($"Collect Second Key Start Zone Two");
-            
+            StartRoomOrange();
+        }
+
+
+        private void StartRoomOrange()
+        {
+            m_RoomOrange.StartZone();
+            Debug.Log($"Start Room Orange");
         }
     }
 }

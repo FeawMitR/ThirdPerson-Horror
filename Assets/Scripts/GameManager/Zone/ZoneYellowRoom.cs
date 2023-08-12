@@ -1,24 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TPSHorror.Item;
 using TPSHorror.Interaction;
+using TPSHorror.Item;
+using UnityEngine;
 
 namespace TPSHorror.GameManager.Zone
 {
-    public class ZoneManagement_Main : ZoneManagement
+    public class ZoneYellowRoom : ZoneManagement
     {
         [SerializeField]
-        private KeyItem m_KeyYellowRoom = null;
+        private Door m_DoorZoneOne = null;
 
+        [SerializeField]
+        private KeyItem m_KeyOrangeRoom = null;
 
         public override void StartZone()
         {
             base.StartZone();
+            m_DoorZoneOne.StartOperating();
 
-            m_KeyYellowRoom.OnFinishedInteract += OnFinishedCollectInteract;
+            m_KeyOrangeRoom.OnFinishedInteract += OnFinishedCollectInteract;
         }
-
 
         private void OnFinishedCollectInteract(object sender, IInteractAble e)
         {

@@ -455,7 +455,16 @@ namespace TPSHorror.PlayerControllerCharacter
                 {
                     m_CurrentInteraction = interactAble;
                     var bindingIndex = m_InputAction.PlayerMap.Interaction.GetBindingIndex(InputBinding.MaskByGroup(m_playerInput.currentControlScheme));
-                    UIInteractionManager.Instance.ShowUIInteract(interactAble, m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex));
+                    string textInteraction = string.Empty;
+                    if (interactAble.CanInteraction(this))
+                    {
+                        textInteraction = $"Press { m_InputAction.PlayerMap.Interaction.GetBindingDisplayString(bindingIndex)} {interactAble.TextCanInteractAble}";
+                    }
+                    else
+                    {
+                        textInteraction = $"{interactAble.TextCannotInteractAble}";
+                    }
+                    UIInteractionManager.Instance.ShowUIInteract(interactAble, textInteraction);
                     return;
                 }
             }
@@ -474,7 +483,7 @@ namespace TPSHorror.PlayerControllerCharacter
                     //Debug.LogError($"Overlap Look Found {hitColliders[i].name}");
                     if (Physics.Raycast(m_CameraTarget.transform.position, m_CameraTarget.transform.forward, out RaycastHit hit, m_MaxLegnthFindInteraction, m_InteractionAbleLayerMask))
                     {
-                        if(hit.collider == hitColliders[i] && inputInteraction.CanInteraction(this))
+                        if(hit.collider == hitColliders[i])
                         {
                             //Debug.LogError($"Ray Look Found {hit.collider.name}");
                             return inputInteraction;

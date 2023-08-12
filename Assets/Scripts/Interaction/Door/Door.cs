@@ -32,6 +32,14 @@ namespace TPSHorror.Interaction
         public Vector3 UiOffset => m_UIOffset;
         public Vector3 Pos => m_Knob.position + UiOffset;
 
+        [SerializeField]
+        private string m_TextCanInteractAble;
+        [SerializeField]
+        private string m_TextCannotInteractAble;
+
+        public string TextCanInteractAble => m_TextCanInteractAble;
+        public string TextCannotInteractAble => m_TextCannotInteractAble;
+
         public event EventHandler<IInteractAble> OnFinishedInteract;
 
         public void StartOperating()
