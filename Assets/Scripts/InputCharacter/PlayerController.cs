@@ -96,6 +96,9 @@ namespace TPSHorror.PlayerControllerCharacter
         [SerializeField]
         private PerceptionFieldOfViewSign m_PerceptionFieldOfViewSign = null;
 
+
+        public System.Action onPlayerWasCaughtEvent;
+
         private void Awake()
         {
             Initialized();
@@ -145,6 +148,12 @@ namespace TPSHorror.PlayerControllerCharacter
             //Cursor.visible = false;
 
             m_IsOperating = true;
+        }
+
+        public void PlayerWasCaught()
+        {
+            m_InputAction.PlayerMap.Disable();
+            onPlayerWasCaughtEvent?.Invoke();
         }
 
         public void StopOperation()

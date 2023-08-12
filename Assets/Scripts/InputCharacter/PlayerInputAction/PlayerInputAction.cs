@@ -167,7 +167,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""id"": ""5fce73d8-661b-477d-baaf-d3d4a0a12692"",
                     ""path"": ""<Pointer>/delta"",
                     ""interactions"": """",
-                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)"",
+                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2(x=0.075,y=0.075)"",
                     ""groups"": ""KeyboardMouse"",
                     ""action"": ""Look"",
                     ""isComposite"": false,

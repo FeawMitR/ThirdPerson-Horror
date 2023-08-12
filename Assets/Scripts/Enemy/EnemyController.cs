@@ -289,9 +289,14 @@ namespace TPSHorror.Enemy
                     float distance = Vector3.Distance(transform.position, m_TargetHunting.position);
                     if (!m_FieldOfViewSensorSensors.IsObstacleBlock(directionToTarget, distance))
                     {
+                        //m_TargetHunting.GetComponent<PlayerControllerCharacter.PlayerController>().PlayerWasCaught();
+                        PlayerControllerCharacter.PlayerController player = m_TargetHunting.GetComponentInParent<PlayerControllerCharacter.PlayerController>();
+                        player.PlayerWasCaught();
                         //TODO Fix
-                        StopHuntingState();
-                        Debug.LogError($"End Game");
+                        //StopHuntingState();
+                        StopOperation();
+                       
+                        //Debug.LogError($"End Game");
                     }
                     else
                     {
@@ -300,10 +305,7 @@ namespace TPSHorror.Enemy
 
                     }
                 }
-                else
-                {
-                    Debug.LogError($"WTF ?");
-                }
+               
             } 
         }
 

@@ -58,6 +58,9 @@ namespace TPSHorror.GameManager
             m_UIStartGame.Show();
 
             m_UIEndGame = Instantiate(m_UIEndGamePrefab, CanvasInstance.Instance.Canvas.transform);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
 
@@ -67,7 +70,11 @@ namespace TPSHorror.GameManager
         {
             m_UIStartGame.ButtonStartGame.onClick.RemoveListener(GameStart);
             m_player.StartOperation();
+            m_player.onPlayerWasCaughtEvent += FinishedGameOver;
             m_UIStartGame.Hide();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
             StartMainZone();
         }
@@ -145,6 +152,7 @@ namespace TPSHorror.GameManager
         {
             if (!m_IsFinished)
             {
+                m_player.onPlayerWasCaughtEvent -= FinishedGameOver;
                 m_IsFinished = true;
                 m_FinishedGame = FishedGameType.GameOver;
                 Debug.Log($"FinishedOver");
@@ -155,6 +163,9 @@ namespace TPSHorror.GameManager
 
         private void FishedGame()
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
             m_player.StopOperation();
             m_UIEndGame.EndGameTypeText.text = $"{m_FinishedGame}";
             m_UIEndGame.ButtonReStartGame.onClick.AddListener(RestartGame);

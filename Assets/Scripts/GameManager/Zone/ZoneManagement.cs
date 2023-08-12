@@ -27,7 +27,7 @@ namespace TPSHorror.GameManager.Zone
                 if (m_Enemies[i].m_Enemy && m_Enemies[i].m_patrolGroup)
                 {
                     m_Enemies[i].m_Enemy.GroupPatrol = m_Enemies[i].m_patrolGroup;
-                    //m_Enemies[i].m_Enemy.StartOperation();
+                    m_Enemies[i].m_Enemy.StartOperation();
                 }
             }
         }
