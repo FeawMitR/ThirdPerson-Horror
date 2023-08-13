@@ -56,7 +56,11 @@ namespace TPSHorror.UserInterface
 
         private void UnInitialized()
         {
-            Destroy(m_UiInteraction.gameObject);
+            if (m_UiInteraction)
+            {
+                Destroy(m_UiInteraction.gameObject);
+            }
+           
             Destroy(this.gameObject);
         }
 

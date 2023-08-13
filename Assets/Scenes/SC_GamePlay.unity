@@ -7042,7 +7042,7 @@ PrefabInstance:
     - target: {fileID: 3340972438289525712, guid: de688a53ade10ee47a408e2b11fa7379,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.69
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 3340972438289525712, guid: de688a53ade10ee47a408e2b11fa7379,
         type: 3}
@@ -7083,6 +7083,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cabinet (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3650178255393490932, guid: de688a53ade10ee47a408e2b11fa7379,
+        type: 3}
+      propertyPath: m_offsetTargetPush.z
+      value: -1.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de688a53ade10ee47a408e2b11fa7379, type: 3}
@@ -7657,7 +7662,7 @@ PrefabInstance:
     - target: {fileID: 3340972438289525712, guid: de688a53ade10ee47a408e2b11fa7379,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.05
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 3340972438289525712, guid: de688a53ade10ee47a408e2b11fa7379,
         type: 3}
@@ -7708,6 +7713,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cabinet (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3650178255393490932, guid: de688a53ade10ee47a408e2b11fa7379,
+        type: 3}
+      propertyPath: m_offsetTargetPush.x
+      value: -2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de688a53ade10ee47a408e2b11fa7379, type: 3}
@@ -31894,7 +31904,7 @@ PrefabInstance:
     - target: {fileID: 3340972438289525712, guid: de688a53ade10ee47a408e2b11fa7379,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.24
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3340972438289525712, guid: de688a53ade10ee47a408e2b11fa7379,
         type: 3}
@@ -31945,6 +31955,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cabinet
+      objectReference: {fileID: 0}
+    - target: {fileID: 3650178255393490932, guid: de688a53ade10ee47a408e2b11fa7379,
+        type: 3}
+      propertyPath: m_Speed
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3650178255393490932, guid: de688a53ade10ee47a408e2b11fa7379,
+        type: 3}
+      propertyPath: m_offsetTargetPush.x
+      value: -2.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de688a53ade10ee47a408e2b11fa7379, type: 3}

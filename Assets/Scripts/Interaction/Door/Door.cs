@@ -99,9 +99,9 @@ namespace TPSHorror.Interaction
             while (time <1)
             {
                 time += Time.deltaTime;
-                float RotationProgression = Mathf.Clamp01(time / (1 / m_Speed));
-                float RotationCurveValue = m_Rotationcurve.Evaluate(RotationProgression);
-                this.transform.rotation = Quaternion.Lerp(this.transform.rotation, finalRotation, RotationCurveValue);
+                float progression = Mathf.Clamp01(time / (1 / m_Speed));
+                float curveValue = m_Rotationcurve.Evaluate(progression);
+                this.transform.rotation = Quaternion.Lerp(this.transform.rotation, finalRotation, curveValue);
                 yield return null;
             }
 

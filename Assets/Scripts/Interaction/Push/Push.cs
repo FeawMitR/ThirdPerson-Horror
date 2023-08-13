@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TPSHorror.Audio;
 using TPSHorror.PlayerControllerCharacter;
 using UnityEngine;
@@ -71,5 +69,7 @@ namespace TPSHorror.Interaction
             OnFinishedInteract?.Invoke(this, this);
             m_Player = null;
         }
+
+      
     }
 }
