@@ -4,6 +4,7 @@ Unity 2021.3.11f1 URP
 - TexT Mesh Pro 3.0.6
 - Timeline 1.6.4
 - URP 12.1.17
+- Cinemachine 2.8.9
 
 
 # Control
