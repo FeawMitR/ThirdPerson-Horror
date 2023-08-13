@@ -9,12 +9,10 @@ namespace TPSHorror.CutScene
 
         private void OnTriggerEnter(Collider other)
         {
-
-
             if (other.tag == "Player")
             {
                 StartCutscene();
-                Debug.LogError($"SS");
+                //Debug.LogError($"SS");
             }
         }
 

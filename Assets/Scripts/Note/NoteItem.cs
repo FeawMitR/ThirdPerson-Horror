@@ -20,7 +20,7 @@ namespace TPSHorror
 
         public event EventHandler<IInteractAble> OnFinishedInteract;
 
-        [SerializeField]
+        //[SerializeField]
         private bool m_IsReadingNote = false;
 
         [SerializeField]
