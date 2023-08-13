@@ -85,9 +85,9 @@ namespace TPSHorror.PerceptionSystem
         private Transform FindVisibleTarget()
         {
 
-#if UNITY_EDITOR
-            m_VisibleTarget.Clear();
-#endif
+//#if UNITY_EDITOR
+//            m_VisibleTarget.Clear();
+//#endif
             Collider[] targetsViewRadius = Physics.OverlapSphere(transform.position,m_ViewRadius, m_TargetMask);
             for (int i = 0; i < targetsViewRadius.Length; i++)
             {
@@ -103,10 +103,10 @@ namespace TPSHorror.PerceptionSystem
                     {
                         if (!IsObstacleBlock(direction, distance))
                         {
-#if UNITY_EDITOR
-                            m_VisibleTarget.Add(target);
+//#if UNITY_EDITOR
+//                            m_VisibleTarget.Add(target);
+//#endif
                             return target;
-#endif
                         }
                     }
                     else
@@ -116,10 +116,11 @@ namespace TPSHorror.PerceptionSystem
                         {
                             if (!IsObstacleBlock(direction, distance))
                             {
-#if UNITY_EDITOR
-                                m_VisibleTarget.Add(target);
+//#if UNITY_EDITOR
+//                                m_VisibleTarget.Add(target);
+//#endif
+
                                 return target;
-#endif
                             }
                         }
                     }
@@ -136,9 +137,9 @@ namespace TPSHorror.PerceptionSystem
             return Physics.Raycast(transform.position, direction, distance, m_ObstacleMask);
         }
 
-
+        /*
 #if UNITY_EDITOR
-
+        //Test Draw
         private List<Transform> m_VisibleTarget = new List<Transform>();
 
         private void OnDrawGizmos()
@@ -167,5 +168,6 @@ namespace TPSHorror.PerceptionSystem
         }
 
 #endif
+        */
     }
 }
